@@ -251,7 +251,7 @@ Accès via : **Edit → Preferences** (ou menu de l’application sur macOS)
 ### Aperçu de l'architecture
 
 ```
-novelist/
+easy-novels/
 ├── electron/
 │   ├── main.js              # Main process (ESM)
 │   ├── preload.js           # Context bridge (CommonJS)
@@ -269,34 +269,35 @@ L'application utilise un pont IPC sécurisé (`preload → main`):
 
 ```typescript
 // Projects
-window.novelist.projects.create(name);
-window.novelist.projects.list();
-window.novelist.projects.openDialog();
-window.novelist.projects.load(projectPath);
+window.easy - novels.projects.create(name);
+window.easy - novels.projects.list();
+window.easy - novels.projects.openDialog();
+window.easy - novels.projects.load(projectPath);
 
 // Chapters & Scenes
-window.novelist.chapters.list(projectPath);
-window.novelist.chapters.create(projectPath, name);
-window.novelist.chapters.save(projectPath, chapterId, payload);
-window.novelist.chapters.createScene(projectPath, chapterId, sceneName);
-window.novelist.chapters.saveScene(projectPath, chapterId, sceneId, payload);
+window.easy - novels.chapters.list(projectPath);
+window.easy - novels.chapters.create(projectPath, name);
+window.easy - novels.chapters.save(projectPath, chapterId, payload);
+window.easy - novels.chapters.createScene(projectPath, chapterId, sceneName);
+window.easy -
+  novels.chapters.saveScene(projectPath, chapterId, sceneId, payload);
 
 // Characters & Notes
-window.novelist.characters.list(projectPath);
-window.novelist.characters.save(projectPath, characterId, payload);
-window.novelist.notes.list(projectPath);
-window.novelist.notes.save(projectPath, noteId, payload);
+window.easy - novels.characters.list(projectPath);
+window.easy - novels.characters.save(projectPath, characterId, payload);
+window.easy - novels.notes.list(projectPath);
+window.easy - novels.notes.save(projectPath, noteId, payload);
 
 // Export & Git
-window.novelist.exports.project(projectPath);
-window.novelist.git.init(projectPath);
-window.novelist.git.commit(projectPath, message);
-window.novelist.git.push(projectPath);
-window.novelist.git.pull(projectPath);
+window.easy - novels.exports.project(projectPath);
+window.easy - novels.git.init(projectPath);
+window.easy - novels.git.commit(projectPath, message);
+window.easy - novels.git.push(projectPath);
+window.easy - novels.git.pull(projectPath);
 
 // Preferences
-window.novelist.preferences.get();
-window.novelist.preferences.set(values);
+window.easy - novels.preferences.get();
+window.easy - novels.preferences.set(values);
 ```
 
 ### Scripts disponibles

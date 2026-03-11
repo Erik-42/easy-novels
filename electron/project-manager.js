@@ -1,17 +1,17 @@
-import fs from 'fs-extra';
-import { join, basename } from 'path';
-import os from 'os';
-import { nanoid } from 'nanoid';
-import simpleGit from 'simple-git';
-import { dialog } from 'electron';
-import TurndownService from 'turndown';
+import fs from "fs-extra";
+import { join, basename } from "path";
+import os from "os";
+import { nanoid } from "nanoid";
+import simpleGit from "simple-git";
+import { dialog } from "electron";
+import TurndownService from "turndown";
 
 const turndownService = new TurndownService({
-  headingStyle: 'atx',
-  codeBlockStyle: 'fenced'
+  headingStyle: "atx",
+  codeBlockStyle: "fenced",
 });
 
-const NOVELIST_ROOT = join(os.homedir(), 'Documents', 'Novelist');
+const EASY_NOVELS_ROOT = join(os.homedir(), "Documents", "Easy-novels");
 
 const defaultProjectFile = (name, id) => ({
   id,
@@ -20,68 +20,72 @@ const defaultProjectFile = (name, id) => ({
   updatedAt: new Date().toISOString(),
   lastChapterId: null,
   lastCharacterId: null,
-  lastNoteId: null
+  lastNoteId: null,
 });
 
 const defaultOrderFile = {
   chapters: [],
   scenes: {},
-  notes: []
+  notes: [],
 };
 
 const ensureBaseDirectory = async () => {
-  await fs.ensureDir(NOVELIST_ROOT);
+  await fs.ensureDir(EASY_NOVELS_ROOT);
 };
 
 const sanitizeName = (name) =>
   name
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9\-\s]/g, '')
-    .replace(/\s+/g, '-');
+    .replace(/[^a-z0-9\-\s]/g, "")
+    .replace(/\s+/g, "-");
 
 const loadProjectFile = async (projectPath) => {
-  const metadataPath = join(projectPath, 'project.json');
+  const metadataPath = join(projectPath, "project.json");
   const data = await fs.readJson(metadataPath);
   return data;
 };
 
 const writeProjectFile = async (projectPath, project) => {
-  const metadataPath = join(projectPath, 'project.json');
+  const metadataPath = join(projectPath, "project.json");
   project.updatedAt = new Date().toISOString();
   await fs.writeJson(metadataPath, project, { spaces: 2 });
 };
 
 const ensureProjectStructure = async (projectPath) => {
   await fs.ensureDir(projectPath);
-  await fs.ensureDir(join(projectPath, 'chapters'));
-  await fs.ensureDir(join(projectPath, 'characters'));
-  await fs.ensureDir(join(projectPath, 'notes'));
+  await fs.ensureDir(join(projectPath, "chapters"));
+  await fs.ensureDir(join(projectPath, "characters"));
+  await fs.ensureDir(join(projectPath, "notes"));
 };
 
 const checkAndCreateProject = async (name) => {
   await ensureBaseDirectory();
   if (!name?.trim()) {
-    throw new Error('Project name is required');
+    throw new Error("Project name is required");
   }
 
   const sanitized = sanitizeName(name) || `story-${Date.now()}`;
   const projectId = `${sanitized}-${nanoid(6)}`;
-  const projectPath = join(NOVELIST_ROOT, projectId);
+  const projectPath = join(EASY_NOVELS_ROOT, projectId);
 
   if (await fs.pathExists(projectPath)) {
-    throw new Error('A project with this identifier already exists');
+    throw new Error("A project with this identifier already exists");
   }
 
   await ensureProjectStructure(projectPath);
   const metadata = defaultProjectFile(name.trim(), projectId);
-  await fs.writeJson(join(projectPath, 'project.json'), metadata, { spaces: 2 });
-  await fs.writeJson(join(projectPath, 'order.json'), defaultOrderFile, { spaces: 2 });
+  await fs.writeJson(join(projectPath, "project.json"), metadata, {
+    spaces: 2,
+  });
+  await fs.writeJson(join(projectPath, "order.json"), defaultOrderFile, {
+    spaces: 2,
+  });
 
-  const chapterId = await createChapter(projectPath, 'Chapter 1');
+  const chapterId = await createChapter(projectPath, "Chapter 1");
   await saveChapter(projectPath, chapterId.id, {
-    title: 'Chapter 1',
-    content: '# Chapter 1\n\nStart your story here...'
+    title: "Chapter 1",
+    content: "# Chapter 1\n\nStart your story here...",
   });
 
   return loadProject(projectPath);
@@ -89,17 +93,17 @@ const checkAndCreateProject = async (name) => {
 
 const listProjects = async () => {
   await ensureBaseDirectory();
-  const dirs = await fs.readdir(NOVELIST_ROOT);
+  const dirs = await fs.readdir(EASY_NOVELS_ROOT);
   const projects = [];
 
   for (const folder of dirs) {
-    const projectPath = join(NOVELIST_ROOT, folder);
-    const metadataPath = join(projectPath, 'project.json');
+    const projectPath = join(EASY_NOVELS_ROOT, folder);
+    const metadataPath = join(projectPath, "project.json");
     if (await fs.pathExists(metadataPath)) {
       const metadata = await fs.readJson(metadataPath);
       projects.push({
         path: projectPath,
-        ...metadata
+        ...metadata,
       });
     }
   }
@@ -109,21 +113,24 @@ const listProjects = async () => {
 
 const getProjectsGitStatus = async () => {
   await ensureBaseDirectory();
-  const dirs = await fs.readdir(NOVELIST_ROOT);
+  const dirs = await fs.readdir(EASY_NOVELS_ROOT);
   const projects = [];
 
   for (const folder of dirs) {
-    const projectPath = join(NOVELIST_ROOT, folder);
+    const projectPath = join(EASY_NOVELS_ROOT, folder);
     // basic check if valid project
-    if (await fs.pathExists(join(projectPath, 'project.json'))) {
+    if (await fs.pathExists(join(projectPath, "project.json"))) {
       const git = simpleGit(projectPath);
       let isRepo = false;
-      let remoteUrl = '';
+      let remoteUrl = "";
       try {
         isRepo = await git.checkIsRepo();
         if (isRepo) {
           const remotes = await git.getRemotes(true);
-          remoteUrl = remotes.find(r => r.name === 'origin')?.refs?.fetch || (remotes[0]?.refs?.fetch || '');
+          remoteUrl =
+            remotes.find((r) => r.name === "origin")?.refs?.fetch ||
+            remotes[0]?.refs?.fetch ||
+            "";
         }
       } catch (e) {
         // ignore git errors
@@ -133,7 +140,7 @@ const getProjectsGitStatus = async () => {
         name: folder,
         path: projectPath,
         isRepo,
-        remoteUrl
+        remoteUrl,
       });
     }
   }
@@ -152,27 +159,27 @@ const loadProject = async (projectPath) => {
     metadata,
     chapters,
     characters,
-    notes
+    notes,
   };
 };
 
 const listChapters = async (projectPath) => {
-  const chaptersDir = join(projectPath, 'chapters');
+  const chaptersDir = join(projectPath, "chapters");
   await fs.ensureDir(chaptersDir);
   const files = await fs.readdir(chaptersDir);
   const chapters = [];
   for (const file of files) {
-    if (!file.endsWith('.md')) continue;
+    if (!file.endsWith(".md")) continue;
     const filePath = join(chaptersDir, file);
-    const content = await fs.readFile(filePath, 'utf-8');
-    const scenesDir = join(chaptersDir, `${basename(file, '.md')}-scenes`);
+    const content = await fs.readFile(filePath, "utf-8");
+    const scenesDir = join(chaptersDir, `${basename(file, ".md")}-scenes`);
     const scenes = await listScenes(scenesDir);
     chapters.push({
-      id: basename(file, '.md'),
-      title: parseChapterTitle(content) || basename(file, '.md'),
+      id: basename(file, ".md"),
+      title: parseChapterTitle(content) || basename(file, ".md"),
       content,
       path: filePath,
-      scenes
+      scenes,
     });
   }
   const order = await loadOrderFile(projectPath);
@@ -206,18 +213,18 @@ const listScenes = async (scenesDir) => {
   }
   const files = await fs.readdir(scenesDir);
   for (const file of files) {
-    if (!file.endsWith('.md')) continue;
+    if (!file.endsWith(".md")) continue;
     const filePath = join(scenesDir, file);
-    const content = await fs.readFile(filePath, 'utf-8');
+    const content = await fs.readFile(filePath, "utf-8");
     items.push({
-      id: basename(file, '.md'),
-      title: parseSceneTitle(content) || basename(file, '.md'),
+      id: basename(file, ".md"),
+      title: parseSceneTitle(content) || basename(file, ".md"),
       content,
-      path: filePath
+      path: filePath,
     });
   }
-  const projectPath = join(scenesDir, '../..'); // Go up from chapter-scenes -> chapters -> project
-  const chapterId = basename(scenesDir).replace('-scenes', '');
+  const projectPath = join(scenesDir, "../.."); // Go up from chapter-scenes -> chapters -> project
+  const chapterId = basename(scenesDir).replace("-scenes", "");
   const order = await loadOrderFile(projectPath);
   const sceneOrder = order.scenes[chapterId] || [];
 
@@ -237,12 +244,12 @@ const parseSceneTitle = (content) => {
 };
 
 const createChapter = async (projectPath, title) => {
-  const chaptersDir = join(projectPath, 'chapters');
+  const chaptersDir = join(projectPath, "chapters");
   await fs.ensureDir(chaptersDir);
-  const chapterId = `${sanitizeName(title) || 'chapter'}-${nanoid(4)}`;
+  const chapterId = `${sanitizeName(title) || "chapter"}-${nanoid(4)}`;
   const chapterPath = join(chaptersDir, `${chapterId}.md`);
   const template = `# ${title}\n\nBegin writing your chapter...`;
-  await fs.writeFile(chapterPath, template, 'utf-8');
+  await fs.writeFile(chapterPath, template, "utf-8");
 
   // Update order
   const order = await loadOrderFile(projectPath);
@@ -256,25 +263,25 @@ const createChapter = async (projectPath, title) => {
 
 const saveChapter = async (projectPath, chapterId, payload) => {
   const { content, title } = payload;
-  if (!chapterId) throw new Error('chapterId is required');
-  const chapterPath = join(projectPath, 'chapters', `${chapterId}.md`);
+  if (!chapterId) throw new Error("chapterId is required");
+  const chapterPath = join(projectPath, "chapters", `${chapterId}.md`);
   await fs.ensureFile(chapterPath);
   let body = content;
   if (title && !content.startsWith(`# ${title}`)) {
-    body = `# ${title}\n\n${content.replace(/^#\s+.*$/m, '').trimStart()}`;
+    body = `# ${title}\n\n${content.replace(/^#\s+.*$/m, "").trimStart()}`;
   }
-  await fs.writeFile(chapterPath, body, 'utf-8');
+  await fs.writeFile(chapterPath, body, "utf-8");
   await writeProjectFile(projectPath, await loadProjectFile(projectPath));
   return chapterPath;
 };
 
 const createScene = async (projectPath, chapterId, sceneName) => {
-  const scenesDir = join(projectPath, 'chapters', `${chapterId}-scenes`);
+  const scenesDir = join(projectPath, "chapters", `${chapterId}-scenes`);
   await fs.ensureDir(scenesDir);
-  const sceneId = `${sanitizeName(sceneName) || 'scene'}-${nanoid(4)}`;
+  const sceneId = `${sanitizeName(sceneName) || "scene"}-${nanoid(4)}`;
   const scenePath = join(scenesDir, `${sceneId}.md`);
   const template = `## ${sceneName}\n\nDescribe the scene...`;
-  await fs.writeFile(scenePath, template, 'utf-8');
+  await fs.writeFile(scenePath, template, "utf-8");
 
   // Update order
   const order = await loadOrderFile(projectPath);
@@ -288,23 +295,23 @@ const createScene = async (projectPath, chapterId, sceneName) => {
 };
 
 const saveScene = async (projectPath, chapterId, sceneId, payload) => {
-  if (!sceneId) throw new Error('sceneId is required');
-  const scenesDir = join(projectPath, 'chapters', `${chapterId}-scenes`);
+  if (!sceneId) throw new Error("sceneId is required");
+  const scenesDir = join(projectPath, "chapters", `${chapterId}-scenes`);
   await fs.ensureDir(scenesDir);
   const scenePath = join(scenesDir, `${sceneId}.md`);
-  const title = payload.title || 'Scene';
-  let body = (payload.content || '').replace(/^##\s+.*$/m, '').trimStart();
+  const title = payload.title || "Scene";
+  let body = (payload.content || "").replace(/^##\s+.*$/m, "").trimStart();
   let content = `## ${title}\n\n${body}`.trimEnd();
-  content += '\n';
-  await fs.writeFile(scenePath, content, 'utf-8');
+  content += "\n";
+  await fs.writeFile(scenePath, content, "utf-8");
   return scenePath;
 };
 
 // Deletions
 const deleteChapter = async (projectPath, chapterId) => {
-  if (!chapterId) throw new Error('chapterId is required');
-  const chapterPath = join(projectPath, 'chapters', `${chapterId}.md`);
-  const scenesDir = join(projectPath, 'chapters', `${chapterId}-scenes`);
+  if (!chapterId) throw new Error("chapterId is required");
+  const chapterPath = join(projectPath, "chapters", `${chapterId}.md`);
+  const scenesDir = join(projectPath, "chapters", `${chapterId}-scenes`);
   // Remove chapter file
   await fs.remove(chapterPath);
   // Remove associated scenes directory if present
@@ -312,7 +319,7 @@ const deleteChapter = async (projectPath, chapterId) => {
 
   // Update order
   const order = await loadOrderFile(projectPath);
-  order.chapters = order.chapters.filter(id => id !== chapterId);
+  order.chapters = order.chapters.filter((id) => id !== chapterId);
   delete order.scenes[chapterId];
   await saveOrderFile(projectPath, order);
 
@@ -321,15 +328,22 @@ const deleteChapter = async (projectPath, chapterId) => {
 };
 
 const deleteScene = async (projectPath, chapterId, sceneId) => {
-  if (!chapterId) throw new Error('chapterId is required');
-  if (!sceneId) throw new Error('sceneId is required');
-  const scenePath = join(projectPath, 'chapters', `${chapterId}-scenes`, `${sceneId}.md`);
+  if (!chapterId) throw new Error("chapterId is required");
+  if (!sceneId) throw new Error("sceneId is required");
+  const scenePath = join(
+    projectPath,
+    "chapters",
+    `${chapterId}-scenes`,
+    `${sceneId}.md`,
+  );
   await fs.remove(scenePath);
 
   // Update order
   const order = await loadOrderFile(projectPath);
   if (order.scenes[chapterId]) {
-    order.scenes[chapterId] = order.scenes[chapterId].filter(id => id !== sceneId);
+    order.scenes[chapterId] = order.scenes[chapterId].filter(
+      (id) => id !== sceneId,
+    );
     await saveOrderFile(projectPath, order);
   }
 
@@ -337,19 +351,19 @@ const deleteScene = async (projectPath, chapterId, sceneId) => {
 };
 
 const listCharacters = async (projectPath) => {
-  const charactersDir = join(projectPath, 'characters');
+  const charactersDir = join(projectPath, "characters");
   await fs.ensureDir(charactersDir);
   const files = await fs.readdir(charactersDir);
   const characters = [];
   for (const file of files) {
-    if (!file.endsWith('.md')) continue;
+    if (!file.endsWith(".md")) continue;
     const filePath = join(charactersDir, file);
-    const content = await fs.readFile(filePath, 'utf-8');
+    const content = await fs.readFile(filePath, "utf-8");
     characters.push({
-      id: basename(file, '.md'),
-      name: parseCharacterName(content) || basename(file, '.md'),
+      id: basename(file, ".md"),
+      name: parseCharacterName(content) || basename(file, ".md"),
       content,
-      path: filePath
+      path: filePath,
     });
   }
   return characters.sort((a, b) => a.name.localeCompare(b.name));
@@ -361,42 +375,43 @@ const parseCharacterName = (content) => {
 };
 
 const saveCharacter = async (projectPath, characterId, payload) => {
-  const charactersDir = join(projectPath, 'characters');
+  const charactersDir = join(projectPath, "characters");
   await fs.ensureDir(charactersDir);
-  const id = characterId || `${sanitizeName(payload.title || 'character')}-${nanoid(4)}`;
+  const id =
+    characterId || `${sanitizeName(payload.title || "character")}-${nanoid(4)}`;
   const filePath = join(charactersDir, `${id}.md`);
-  const title = payload.title || 'Unnamed Character';
-  let content = payload.content || '';
+  const title = payload.title || "Unnamed Character";
+  let content = payload.content || "";
   if (!content.includes(`# ${title}`)) {
-    content = `# ${title}\n\n${content.replace(/^#\s+.*$/m, '').trimStart()}`;
+    content = `# ${title}\n\n${content.replace(/^#\s+.*$/m, "").trimStart()}`;
   }
-  await fs.writeFile(filePath, content, 'utf-8');
+  await fs.writeFile(filePath, content, "utf-8");
   return { id, path: filePath };
 };
 
 const deleteCharacter = async (projectPath, characterId) => {
-  if (!characterId) throw new Error('characterId is required');
-  const filePath = join(projectPath, 'characters', `${characterId}.md`);
+  if (!characterId) throw new Error("characterId is required");
+  const filePath = join(projectPath, "characters", `${characterId}.md`);
   await fs.remove(filePath);
   return true;
 };
 
 const listNotes = async (projectPath) => {
-  const notesDir = join(projectPath, 'notes');
+  const notesDir = join(projectPath, "notes");
   await fs.ensureDir(notesDir);
   const files = await fs.readdir(notesDir);
   const notes = [];
   for (const file of files) {
-    if (!file.endsWith('.md')) continue;
+    if (!file.endsWith(".md")) continue;
     const filePath = join(notesDir, file);
-    const content = await fs.readFile(filePath, 'utf-8');
+    const content = await fs.readFile(filePath, "utf-8");
     const category = parseNoteCategory(content);
     notes.push({
-      id: basename(file, '.md'),
-      title: parseNoteTitle(content) || basename(file, '.md'),
+      id: basename(file, ".md"),
+      title: parseNoteTitle(content) || basename(file, ".md"),
       category,
       content,
-      path: filePath
+      path: filePath,
     });
   }
   const order = await loadOrderFile(projectPath);
@@ -417,17 +432,17 @@ const parseNoteTitle = (content) => {
 };
 
 const saveNote = async (projectPath, noteId, payload) => {
-  const notesDir = join(projectPath, 'notes');
+  const notesDir = join(projectPath, "notes");
   await fs.ensureDir(notesDir);
-  const id = noteId || `${sanitizeName(payload.title || 'note')}-${nanoid(4)}`;
+  const id = noteId || `${sanitizeName(payload.title || "note")}-${nanoid(4)}`;
   const filePath = join(notesDir, `${id}.md`);
-  const title = payload.title || 'Story Note';
-  const category = payload.category || 'General';
-  let body = (payload.content || '').replace(/^#\s+.*$/m, '').trimStart();
-  body = body.replace(/^Category:\s.*$/m, '').trimStart();
+  const title = payload.title || "Story Note";
+  const category = payload.category || "General";
+  let body = (payload.content || "").replace(/^#\s+.*$/m, "").trimStart();
+  body = body.replace(/^Category:\s.*$/m, "").trimStart();
   let content = `# ${title}\n\nCategory: ${category}\n\n${body}`.trimEnd();
-  content += '\n';
-  await fs.writeFile(filePath, content, 'utf-8');
+  content += "\n";
+  await fs.writeFile(filePath, content, "utf-8");
 
   // Update order
   const order = await loadOrderFile(projectPath);
@@ -440,13 +455,13 @@ const saveNote = async (projectPath, noteId, payload) => {
 };
 
 const deleteNote = async (projectPath, noteId) => {
-  if (!noteId) throw new Error('noteId is required');
-  const filePath = join(projectPath, 'notes', `${noteId}.md`);
+  if (!noteId) throw new Error("noteId is required");
+  const filePath = join(projectPath, "notes", `${noteId}.md`);
   await fs.remove(filePath);
 
   // Update order
   const order = await loadOrderFile(projectPath);
-  order.notes = order.notes.filter(id => id !== noteId);
+  order.notes = order.notes.filter((id) => id !== noteId);
   await saveOrderFile(projectPath, order);
 
   return true;
@@ -454,7 +469,7 @@ const deleteNote = async (projectPath, noteId) => {
 
 const parseNoteCategory = (content) => {
   const match = content.match(/^Category:\s*(.+)$/m);
-  return match ? match[1].trim() : 'General';
+  return match ? match[1].trim() : "General";
 };
 
 const exportProject = async (projectPath) => {
@@ -462,16 +477,19 @@ const exportProject = async (projectPath) => {
 
   // Ask user where to save
   const { filePath } = await dialog.showSaveDialog({
-    title: 'Export Project',
-    defaultPath: join(os.homedir(), `Export-${basename(projectPath)}-${new Date().toISOString().split('T')[0]}.md`),
+    title: "Export Project",
+    defaultPath: join(
+      os.homedir(),
+      `Export-${basename(projectPath)}-${new Date().toISOString().split("T")[0]}.md`,
+    ),
     filters: [
-      { name: 'Markdown', extensions: ['md'] },
-      { name: 'Plain Text', extensions: ['txt'] }
-    ]
+      { name: "Markdown", extensions: ["md"] },
+      { name: "Plain Text", extensions: ["txt"] },
+    ],
   });
 
   if (!filePath) {
-    throw new Error('Export cancelled');
+    throw new Error("Export cancelled");
   }
 
   const chapters = await listChapters(projectPath);
@@ -483,34 +501,40 @@ const exportProject = async (projectPath) => {
 
   // Title
   lines.push(`# ${projectName}`);
-  lines.push('');
+  lines.push("");
   lines.push(`_Exported on ${new Date().toLocaleString()}_`);
-  lines.push('');
+  lines.push("");
 
   // Table of Contents
-  lines.push('## Table of Contents');
-  lines.push('');
-  chapters.forEach(ch => {
-    lines.push(`- [${ch.title}](#${ch.title.toLowerCase().replace(/[^\w]+/g, '-')})`);
+  lines.push("## Table of Contents");
+  lines.push("");
+  chapters.forEach((ch) => {
+    lines.push(
+      `- [${ch.title}](#${ch.title.toLowerCase().replace(/[^\w]+/g, "-")})`,
+    );
   });
-  if (characters.length > 0) lines.push('- [Appendix: Characters](#appendix-characters)');
-  if (notes.length > 0) lines.push('- [Appendix: Notes](#appendix-notes)');
-  lines.push('');
-  lines.push('---');
-  lines.push('');
+  if (characters.length > 0)
+    lines.push("- [Appendix: Characters](#appendix-characters)");
+  if (notes.length > 0) lines.push("- [Appendix: Notes](#appendix-notes)");
+  lines.push("");
+  lines.push("---");
+  lines.push("");
 
   // Helper to process content (remove HTML markers, convert to MD if needed)
   const processContent = (content) => {
-    if (!content) return '';
+    if (!content) return "";
     let body = content;
     // Remove title lines
-    body = body.replace(/^#+\s+.*$/m, '').trim();
+    body = body.replace(/^#+\s+.*$/m, "").trim();
     // Remove category lines
-    body = body.replace(/^Category:\s*.*$/m, '').trim();
+    body = body.replace(/^Category:\s*.*$/m, "").trim();
 
     // Check for HTML body
-    if (body.includes('<!-- HTML_BODY -->') || (body.includes('<') && body.includes('</'))) {
-      body = body.replace('<!-- HTML_BODY -->', '').trim();
+    if (
+      body.includes("<!-- HTML_BODY -->") ||
+      (body.includes("<") && body.includes("</"))
+    ) {
+      body = body.replace("<!-- HTML_BODY -->", "").trim();
       // Convert HTML to Markdown
       return turndownService.turndown(body);
     }
@@ -520,48 +544,48 @@ const exportProject = async (projectPath) => {
   // Content
   for (const chapter of chapters) {
     lines.push(`# ${chapter.title}`);
-    lines.push('');
+    lines.push("");
     lines.push(processContent(chapter.content));
-    lines.push('');
+    lines.push("");
 
     for (const scene of chapter.scenes) {
       lines.push(`## ${scene.title}`);
-      lines.push('');
+      lines.push("");
       lines.push(processContent(scene.content));
-      lines.push('');
+      lines.push("");
     }
-    lines.push('---');
-    lines.push('');
+    lines.push("---");
+    lines.push("");
   }
 
   // Appendices
   if (characters.length > 0) {
-    lines.push('# Appendix: Characters');
-    lines.push('');
+    lines.push("# Appendix: Characters");
+    lines.push("");
     for (const char of characters) {
       lines.push(`## ${char.name}`);
-      lines.push('');
+      lines.push("");
       lines.push(processContent(char.content));
-      lines.push('');
+      lines.push("");
     }
-    lines.push('---');
-    lines.push('');
+    lines.push("---");
+    lines.push("");
   }
 
   if (notes.length > 0) {
-    lines.push('# Appendix: Notes');
-    lines.push('');
+    lines.push("# Appendix: Notes");
+    lines.push("");
     for (const note of notes) {
       lines.push(`## ${note.title}`);
-      lines.push(`**Category:** ${note.category || 'General'}`);
-      lines.push('');
+      lines.push(`**Category:** ${note.category || "General"}`);
+      lines.push("");
       lines.push(processContent(note.content));
-      lines.push('');
+      lines.push("");
     }
   }
 
-  const exportContent = lines.join('\n');
-  await fs.writeFile(filePath, exportContent, 'utf-8');
+  const exportContent = lines.join("\n");
+  await fs.writeFile(filePath, exportContent, "utf-8");
   return filePath;
 };
 
@@ -571,29 +595,31 @@ const initGitRepo = async (projectPath) => {
   if (!isRepo) {
     await git.init();
   }
-  await git.add('./*');
-  await git.commit('Initial commit', { '--allow-empty': true }).catch(() => null);
+  await git.add("./*");
+  await git
+    .commit("Initial commit", { "--allow-empty": true })
+    .catch(() => null);
   return true;
 };
 
 const commitCurrentChanges = async (projectPath, message) => {
   const git = simpleGit(projectPath);
   const isRepo = await git.checkIsRepo();
-  if (!isRepo) throw new Error('Project is not a Git repository yet');
-  await git.add('./*');
-  const summary = await git.commit(message || 'Update from Novelist');
+  if (!isRepo) throw new Error("Project is not a Git repository yet");
+  await git.add("./*");
+  const summary = await git.commit(message || "Update from Easy-novels");
   return summary;
 };
 
 const pushToRemote = async (projectPath) => {
   const git = simpleGit(projectPath);
   const isRepo = await git.checkIsRepo();
-  if (!isRepo) throw new Error('Project is not a Git repository yet');
+  if (!isRepo) throw new Error("Project is not a Git repository yet");
 
   // Auto-commit if there are changes (Sync behavior)
   const status = await git.status();
   if (status.files.length > 0) {
-    await git.add('./*');
+    await git.add("./*");
     await git.commit(`Manual sync: ${new Date().toLocaleString()}`);
   }
 
@@ -601,10 +627,14 @@ const pushToRemote = async (projectPath) => {
     await git.push();
   } catch (e) {
     // If push fails due to missing upstream, set it and try again
-    if (e.message.includes('no upstream branch') || e.message.includes('current branch') && e.message.includes('no upstream')) {
-      const branch = await git.revparse(['--abbrev-ref', 'HEAD']);
+    if (
+      e.message.includes("no upstream branch") ||
+      (e.message.includes("current branch") &&
+        e.message.includes("no upstream"))
+    ) {
+      const branch = await git.revparse(["--abbrev-ref", "HEAD"]);
       console.log(`Setting upstream for branch ${branch} and pushing...`);
-      await git.push(['--set-upstream', 'origin', branch]);
+      await git.push(["--set-upstream", "origin", branch]);
     } else {
       throw e;
     }
@@ -615,29 +645,30 @@ const pushToRemote = async (projectPath) => {
 const pullFromRemote = async (projectPath) => {
   const git = simpleGit(projectPath);
   const isRepo = await git.checkIsRepo();
-  if (!isRepo) throw new Error('Project is not a Git repository yet');
+  if (!isRepo) throw new Error("Project is not a Git repository yet");
   await git.pull();
   return true;
 };
 
 const setGitRemote = async (projectPath, remoteUrl) => {
-  if (!remoteUrl || !remoteUrl.trim()) throw new Error('Remote URL is required');
+  if (!remoteUrl || !remoteUrl.trim())
+    throw new Error("Remote URL is required");
   const git = simpleGit(projectPath);
   const isRepo = await git.checkIsRepo();
-  if (!isRepo) throw new Error('Project is not a Git repository yet');
+  if (!isRepo) throw new Error("Project is not a Git repository yet");
   const remotes = await git.getRemotes(true);
-  const origin = remotes.find((r) => r.name === 'origin');
+  const origin = remotes.find((r) => r.name === "origin");
   if (!origin) {
-    await git.addRemote('origin', remoteUrl.trim());
+    await git.addRemote("origin", remoteUrl.trim());
   } else {
-    await git.remote(['set-url', 'origin', remoteUrl.trim()]);
+    await git.remote(["set-url", "origin", remoteUrl.trim()]);
   }
   return true;
 };
 
 // --- Order Management ---
 const loadOrderFile = async (projectPath) => {
-  const orderPath = join(projectPath, 'order.json');
+  const orderPath = join(projectPath, "order.json");
   if (!(await fs.pathExists(orderPath))) {
     return { ...defaultOrderFile };
   }
@@ -645,7 +676,7 @@ const loadOrderFile = async (projectPath) => {
 };
 
 const saveOrderFile = async (projectPath, order) => {
-  const orderPath = join(projectPath, 'order.json');
+  const orderPath = join(projectPath, "order.json");
   await fs.writeJson(orderPath, order, { spaces: 2 });
 };
 
@@ -684,11 +715,11 @@ const checkGitInstalled = async () => {
 
 const cloneProject = async (remoteUrl, targetName) => {
   await ensureBaseDirectory();
-  const name = targetName || basename(remoteUrl, '.git');
-  const projectPath = join(NOVELIST_ROOT, name);
+  const name = targetName || basename(remoteUrl, ".git");
+  const projectPath = join(EASY_NOVELS_ROOT, name);
 
   if (await fs.pathExists(projectPath)) {
-    throw new Error('Directory already exists');
+    throw new Error("Directory already exists");
   }
 
   const git = simpleGit();
@@ -701,8 +732,8 @@ const cloneProject = async (remoteUrl, targetName) => {
 
 const configureGitUser = async (projectPath, username, email) => {
   const git = simpleGit(projectPath);
-  await git.addConfig('user.name', username);
-  await git.addConfig('user.email', email);
+  await git.addConfig("user.name", username);
+  await git.addConfig("user.email", email);
 };
 
 const autoSync = async (projectPath) => {
@@ -712,16 +743,20 @@ const autoSync = async (projectPath) => {
 
   const status = await git.status();
   if (status.files.length > 0) {
-    await git.add('./*');
+    await git.add("./*");
     await git.commit(`Auto-save: ${new Date().toLocaleString()}`);
     try {
       await git.push();
     } catch (e) {
-      if (e.message.includes('no upstream branch') || e.message.includes('current branch') && e.message.includes('no upstream')) {
-        const branch = await git.revparse(['--abbrev-ref', 'HEAD']);
-        await git.push(['--set-upstream', 'origin', branch]);
+      if (
+        e.message.includes("no upstream branch") ||
+        (e.message.includes("current branch") &&
+          e.message.includes("no upstream"))
+      ) {
+        const branch = await git.revparse(["--abbrev-ref", "HEAD"]);
+        await git.push(["--set-upstream", "origin", branch]);
       } else {
-        console.error('Auto-sync push failed:', e);
+        console.error("Auto-sync push failed:", e);
       }
     }
     return true; // Synced
@@ -741,7 +776,10 @@ const getGitStatus = async (projectPath) => {
       isRepo: true,
       hasChanges: status.files.length > 0,
       hasRemote: remotes.length > 0,
-      remoteUrl: remotes.find(r => r.name === 'origin')?.refs?.fetch || (remotes[0]?.refs?.fetch || '')
+      remoteUrl:
+        remotes.find((r) => r.name === "origin")?.refs?.fetch ||
+        remotes[0]?.refs?.fetch ||
+        "",
     };
   } catch (e) {
     return { isRepo: false, error: e.message };
@@ -749,7 +787,7 @@ const getGitStatus = async (projectPath) => {
 };
 
 export {
-  NOVELIST_ROOT,
+  EASY_NOVELS_ROOT,
   ensureProjectStructure,
   checkAndCreateProject,
   listProjects,
@@ -781,5 +819,5 @@ export {
   configureGitUser,
   autoSync,
   getGitStatus,
-  getProjectsGitStatus
+  getProjectsGitStatus,
 };
