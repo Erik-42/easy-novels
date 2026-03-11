@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Easy-novels</title>
+    <title>Novelist</title>
     <link rel="stylesheet" href="./styles.css" />
     <link
       rel="stylesheet"
@@ -20,7 +20,7 @@
   <body>
     <div id="tutorial-overlay" class="overlay hidden">
       <div class="overlay-content">
-        <h1>Welcome to Easy-novels</h1>
+        <h1>Welcome to Novelist</h1>
         <ol id="tutorial-steps"></ol>
         <div class="overlay-actions">
           <button id="tutorial-prev" class="ghost">Back</button>
@@ -32,7 +32,7 @@
 
     <main id="welcome-screen">
       <div class="welcome-card">
-        <h1>Easy-novels</h1>
+        <h1>Novelist</h1>
         <p>Create beautiful stories without distraction.</p>
         <div class="welcome-actions">
           <button id="create-project" class="primary">
@@ -51,7 +51,7 @@
       <div class="modal-content">
         <h2>Name your project</h2>
         <p class="modal-subtitle">
-          Projects live in <code>~/Documents/Easy-novels/</code>
+          Projects live in <code>~/Documents/Novelist/</code>
         </p>
         <input
           id="new-project-name"
@@ -413,7 +413,7 @@
           <div id="settings-about" class="settings-page hidden">
             <div class="about-hero">
               <div class="app-logo">N</div>
-              <h4>Easy-novels v1.0.1</h4>
+              <h4>Novelist v1.0.1</h4>
               <p>A distraction-free writing environment for authors.</p>
             </div>
 
@@ -571,6 +571,7 @@
     <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
     <script src="../node_modules/marked/marked.min.js"></script>
     <script src="../node_modules/turndown/dist/turndown.min.js"></script>
+    <script src="../browser-app.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>
