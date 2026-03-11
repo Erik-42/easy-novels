@@ -1,68 +1,95 @@
 <div align="center">
+</div>
+<a name="readme-top"></a>
 
-# 📚 Novelist
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <h1>📚 Easy-Novels</h1>
+  <h4>Version 1.0.0</h4>
+  <a href="https://github.com/Erik-42">
+    <img src="./assets/logo/logo-spg.jpeg" alt="Logo Files-Project-Generation" width="150" height="150">
+  </a>
+</div>
 
-### Distraction-Free Desktop Writing App for Authors
+<!-- ABOUT THE PROJECT -->
 
-*Your creative companion for crafting long-form fiction with focus and clarity*
+## About The Project
 
-[![GitHub stars](https://img.shields.io/github/stars/cogrow4/Novelist?style=for-the-badge&logo=github&color=6366f1)](https://github.com/cogrow4/Novelist/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/cogrow4/Novelist?style=for-the-badge&logo=github&color=6366f1)](https://github.com/cogrow4/Novelist/network)
-[![GitHub issues](https://img.shields.io/github/issues/cogrow4/Novelist?style=for-the-badge&logo=github&color=6366f1)](https://github.com/cogrow4/Novelist/issues)
+<div align="center">
+
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Issues][issues-shield]][issues-url]
+<br/>
+
+Repo: [![wakatime](https://wakatime.com/badge/github/Erik-42/structure-project-generator.svg)](https://wakatime.com/badge/github/Erik-42/structure-project-generator)
+
+Project: [![wakatime](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/4560400d-1de2-4e4e-9af4-393e96928dc8.svg)](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/4560400d-1de2-4e4e-9af4-393e96928dc8)
+
+</div>
+
+### Application d'écriture de bureau sans distraction pour les auteurs
+
+_Votre compagnon créatif pour écrire des romans longs avec clarté et précision._
+
+[![GitHub stars](https://img.shields.io/github/stars/Erik-42/easy-novels?style=for-the-badge&logo=github&color=6366f1)](https://github.com/Erik-42/easy-novels/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Erik-42/easy-novels?style=for-the-badge&logo=github&color=6366f1)](https://github.com/Erik-42/easy-novels/network)
+[![GitHub issues](https://img.shields.io/github/issues/Erik-42/easy-novels?style=for-the-badge&logo=github&color=6366f1)](https://github.com/Erik-42/easy-novels/issues)
 [![License](https://img.shields.io/badge/License-Unlicense-6366f1?style=for-the-badge)](./LICENSE)
 
 [![Built with Electron](https://img.shields.io/badge/Built_with-Electron-47848f?style=for-the-badge&logo=electron)](https://www.electronjs.org/)
 [![Powered by Quill](https://img.shields.io/badge/Powered_by-Quill-1d4ed8?style=for-the-badge)](https://quilljs.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js)](https://nodejs.org/)
 
-[🐛 Report Bug](https://github.com/cogrow4/Novelist/issues) • [✨ Request Feature](https://github.com/cogrow4/Novelist/issues)
+[🐛 Signaler un bug](https://github.com/Erik-42/easy-novels/issues) • [✨ Demander une fonctionnalité](https://github.com/Erik-42/easy-novels/issues)
 
----
+## <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 </div>
 
-## 📋 Table of Contents
+## 📋 Table des matières
 
-- [✨ Features](#-features)
-- [🎯 What Makes This Special](#-what-makes-this-special)
-- [🚀 Quick Start](#-quick-start)
-- [📁 Project Storage](#-project-storage)
+- [✨ Fonctionnalités](#-features)
+- [🎯 Ce qui rend ce produit spécial](#-what-makes-this-special)
+- [🚀 Démarrage rapide](#-quick-start)
+- [📁 Stockage de projets](#-project-storage)
 - [⚙️ Configuration](#️-configuration)
-- [💻 Development](#-development)
-- [🔧 Troubleshooting](#-troubleshooting)
-- [🗺️ Roadmap](#️-roadmap)
-- [🤝 Contributing](#-contributing)
+- [💻 Développement](#-development)
+- [🔧 Dépannage](#-troubleshooting)
+- [🗺️ Feuille de route](#️-roadmap)
+- [🤝 Contribuer](#-contributing)
 - [📄 License](#-license)
 - [💖 Credits](#-credits)
 
 ---
 
-## ✨ Features
+## ✨ Fonctionnalités
 
 <div align="center">
 
-| Feature | Description |
-|---------|-------------|
-| ✍️ **Clean Writing UI** | Rich-text editor powered by Quill with automatic fallback |
-| 📖 **Chapters & Scenes** | Organize your story with nested structure and quick navigation |
-| 👥 **Character Sheets** | Keep track of your cast with dedicated character profiles |
-| 📝 **Planning Notes** | Categorized notes for worldbuilding, outlines, and research |
-| 💾 **Auto-Save** | Never lose your work with automatic saving and manual flush |
-| 📊 **Word Counts** | Live tracking for current document and total project words |
-| 📤 **Export** | Compile your entire project into a single Markdown file |
-| 🔄 **Git Integration** | Built-in version control with init, commit, push, and pull |
-| 📂 **Project Management** | Recent projects list and quick-access welcome screen |
-| ⚡ **Keyboard Shortcuts** | Toggle sidebar (Cmd/Ctrl+B), commit (Cmd/Ctrl+Shift+C) |
-| 🔒 **Privacy First** | All data stays local - no telemetry, no cloud sync |
-| 📝 **Markdown Storage** | Portable, diff-friendly format for version control |
+| Fonctionnalité                                 | Description                                                                                         |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| ✍️ **Interface utilisateur d'écriture épurée** | Éditeur de texte enrichi basé sur Quill avec repli automatique                                      |
+| 📖 **Chapitres et scènes**                     | Organisez votre récit grâce à une structure imbriquée et une navigation rapide.                     |
+| 👥 **Fiches de personnage**                    | Suivez vos personnages grâce à des profils de personnages dédiés.                                   |
+| 📝 **Notes de planification**                  | Notes classées par catégories pour la création d'univers, plans et recherches                       |
+| 💾 **Sauvegarde automatique**                  | Ne perdez plus jamais votre travail grâce à la sauvegarde automatique et à la suppression manuelle. |
+| 📊 **Nombre de mots**                          | Suivi en temps réel du nombre de mots dans le document actuel et du nombre total de mots du projet  |
+| 📤 **Export**                                  | Compilez l'intégralité de votre projet dans un seul fichier Markdown                                |
+| 🔄 **Git Integration**                         | Système de contrôle de version intégré avec les commandes init, commit, push et pull.               |
+| 📂 **Gestion de projet**                       | Liste des projets récents et écran d'accueil à accès rapide                                         |
+| ⚡ **Raccourcis clavier**                      | Afficher/masquer la barre latérale (Cmd/Ctrl+B), valider (Cmd/Ctrl+Shift+C)                         |
+| 🔒 **Priorité à la confidentialité**           | Toutes les données restent en local – aucune télémétrie, aucune synchronisation avec le cloud       |
+| 📝 **Stockage Markdown**                       | Format portable et compatible avec les différences pour le contrôle de version                      |
 
 </div>
 
 ---
 
-## 🎯 What Makes This Special
+## 🎯 Ce qui rend ce produit spécial
 
-### 🏗️ Built With Modern Technology
+### 🏗️ Construit avec des technologies modernes
 
 ```
 Frontend:         Electron + Quill Rich Text Editor
@@ -73,56 +100,57 @@ Architecture:     IPC bridge with secure context isolation
 Format:           Markdown-backed content (portable & VCS-friendly)
 ```
 
-### 🎪 Key Capabilities
+### 🎪 Principales capacités
 
-- **Project Model**: Each project is a folder with Markdown files for chapters, scenes, characters, and notes
-- **Hierarchical Structure**: Chapters contain scenes; scenes are stored as nested files
-- **Live Preview**: Rich formatting toolbar with headings, lists, code blocks, and links
-- **Contextual UI**: Meta panel adapts to show relevant fields (Note category, save status)
-- **Tutorial System**: Built-in tips and tutorial overlay accessible from Help menu
-- **Cross-Platform**: Works on macOS, Windows, and Linux
+- **Modèle de projet**: Chaque projet est un dossier contenant des fichiers Markdown pour les chapitres, les scènes, les personnages et les notes.
+- **Structure hiérarchique**: les chapitres contiennent des scènes ; les scènes sont stockées sous forme de fichiers imbriqués
+- **Aperçu en direct**: Barre d’outils de mise en forme enrichie avec titres, listes, blocs de code et liens
+- **Interface utilisateur contextuelle**: le panneau méta s’adapte pour afficher les champs pertinents (catégorie de la note, statut d’enregistrement).
+- **Système de tutoriels**: Conseils intégrés et tutoriel superposé accessibles depuis le menu Aide
+- **Multiplateforme**: Fonctionne sous macOS, Windows et Linux
 
-### 📚 Perfect For Writers Who Want
+### 📚 Parfait pour les écrivains qui veulent
 
-- 🎯 **Focus**: Distraction-free interface that keeps you in the creative flow
-- 🗂️ **Organization**: Clear structure for complex stories with multiple plot threads
-- 💾 **Safety**: Automatic saving with Git backup for peace of mind
-- 🚀 **Simplicity**: No cloud accounts, no subscriptions, just write
-- 🔓 **Freedom**: Your files stay yours - portable Markdown format
+- 🎯 **Concentration**: Une interface sans distraction qui vous permet de rester concentré sur votre créativité.
+- 🗂️ **Organisation**: Une structure claire pour les histoires complexes comportant plusieurs intrigues.
+- 💾 **Sécurité**: Sauvegarde automatique avec Git pour une tranquillité d'esprit totale
+- 🚀 **Simplicité**: Pas de comptes cloud, pas d'abonnements, écrivez simplement
+- 🔓 **Liberté**:Vos fichiers restent les vôtres - format Markdown portable
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Démarrage rapide
 
-### 📦 Download Pre-Built Binaries (Recommended)
+### 📦 Télécharger les binaires précompilés (recommandé)
 
-Get the latest release for your platform from the [Releases page](https://github.com/cogrow4/Novelist/releases).
+Téléchargez la dernière version pour votre plateforme depuis la [page des versions ](https://github.com/Erik-42/easy-novels/releases).
 
-**Available Platforms:**
-- **macOS:** Universal DMG (Intel + Apple Silicon)
+**Plateformes disponibles :**
+
+- **macOS:** DMG universel (Intel + Apple Silicon)
 - **Windows:** MSI (x64) or NSIS Setup (ARM64)
 - **Linux:** AppImage, DEB, or RPM packages
-  - Supports x64, ARM64, and ARMv7l architectures
+  - Compatible avec les architectures x64, ARM64 et ARMv7l
 
-Just download, install, and start writing!
+Il suffit de télécharger, d'installer et de commencer à écrire !
 
 ---
 
-### 🛠️ Build From Source
+### 🛠️ Construire à partir du code source
 
-For developers or those who want to build from source:
+Pour les développeurs ou ceux qui souhaitent compiler à partir du code source :
 
-#### Prerequisites
+#### Prérequis
 
-- **Node.js 18+** (recommended)
+- **Node.js 18+** (recommandé)
 - **macOS, Windows, or Linux**
-- **Git** (optional, for version control features)
+- **Git** (optionnel, pour les fonctionnalités de contrôle de version)
 
 #### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/cogrow4/Novelist.git
+git clone https://github.com/Erik-42/easy-novels.git
 
 # Navigate to project directory
 cd Novelist
@@ -132,7 +160,7 @@ pnpm i
 # or: npm install / yarn
 ```
 
-### Running the App
+### Exécution de l'application
 
 ```bash
 # Start Novelist
@@ -142,21 +170,21 @@ npm start
 NODE_ENV=development npm start
 ```
 
-### First Launch
+### Premier lancement
 
-The welcome screen provides three options:
+L'écran d'accueil propose trois options :
 
-1. **Create New Project** - Stored automatically in `~/Documents/Novelist/`
-2. **Open Existing Project** - Browse to any project folder
-3. **Recent Projects** - Quick access to your recent work
+1. **Créer un nouveau projet** - Enregistré automatiquement dans `~/Documents/Novelist/`
+2. **Ouvrir un projet existant ** - Accédez à n'importe quel dossier de projet
+3. **Projets récents** - Accès rapide à vos travaux récents
 
 ---
 
-## 📁 Project Storage
+## 📁 Stockage de projets
 
-Each project lives under `~/Documents/Novelist/` by default. All content is stored as Markdown files for portability and version control compatibility.
+Chaque projet est hébergé `~/Documents/Novelist/` par défaut dans un répertoire dédié. Tout le contenu est stocké sous forme de fichiers Markdown pour assurer la portabilité et la compatibilité avec le contrôle de version.
 
-### Project Structure
+### Structure du projet
 
 ```
 ~/Documents/Novelist/
@@ -176,12 +204,12 @@ Each project lives under `~/Documents/Novelist/` by default. All content is stor
       worldbuilding-dddd.md
 ```
 
-### Why Markdown?
+### Pourquoi Markdown ?
 
-- ✅ **Portable**: Open in any text editor
-- ✅ **Version Control**: Perfect for Git diffs
-- ✅ **Future-Proof**: Plain text will always be readable
-- ✅ **Searchable**: Use grep, ripgrep, or any search tool
+- ✅ **Portable**: Ouvrez-le dans n'importe quel éditeur de texte
+- ✅ **Gestion de versions**: Idéal pour les différences Git
+- ✅ **À l'épreuve du temps**: Le texte brut restera toujours lisible
+- ✅ **Recherche possible**: Utilisez grep, ripgrep ou tout autre outil de recherche.
 
 ---
 
@@ -189,15 +217,15 @@ Each project lives under `~/Documents/Novelist/` by default. All content is stor
 
 ### Preferences
 
-Novelist stores preferences using `electron-store`:
+Novelist enregistre les préférences en utilisant `electron-store`:
 
-- Font size for the editor
-- Last opened project
-- Recently used projects list (MRU)
+- Taille de police pour l'éditeur
+- Dernier projet ouvert
+- Liste des projets récemment utilisés (MRU)
 
-Access via: **Edit → Preferences** (or app menu on macOS)
+Accès via : **Edit → Preferences** (ou menu de l’application sur macOS)
 
-### Editor Features
+### Fonctionnalités de l'éditeur
 
 ```javascript
 // Rich-text formatting
@@ -209,21 +237,21 @@ Access via: **Edit → Preferences** (or app menu on macOS)
 - Blockquotes
 ```
 
-### Keyboard Shortcuts
+### Raccourcis clavier
 
-| Action | macOS | Windows/Linux |
-|--------|-------|---------------|
-| Toggle Sidebar | `Cmd+B` | `Ctrl+B` |
-| Git Commit | `Cmd+Shift+C` | `Ctrl+Shift+C` |
-| Save | `Cmd+S` | `Ctrl+S` |
-| New Chapter | Menu | Menu |
-| Export Project | Menu | Menu |
+| Action                             | macOS         | Windows/Linux  |
+| ---------------------------------- | ------------- | -------------- |
+| Afficher/masquer la barre latérale | `Cmd+B`       | `Ctrl+B`       |
+| Git Commit                         | `Cmd+Shift+C` | `Ctrl+Shift+C` |
+| Sauvegarder                        | `Cmd+S`       | `Ctrl+S`       |
+| Nouveau chapitre                   | Menu          | Menu           |
+| Projet d'exportation               | Menu          | Menu           |
 
 ---
 
-## 💻 Development
+## 💻 Développement
 
-### Architecture Overview
+### Aperçu de l'architecture
 
 ```
 novelist/
@@ -238,43 +266,43 @@ novelist/
 └── package.json
 ```
 
-### IPC Communication
+### Communication IPC
 
-The app uses a secure IPC bridge (`preload → main`):
+L'application utilise un pont IPC sécurisé (`preload → main`):
 
 ```typescript
 // Projects
-window.novelist.projects.create(name)
-window.novelist.projects.list()
-window.novelist.projects.openDialog()
-window.novelist.projects.load(projectPath)
+window.novelist.projects.create(name);
+window.novelist.projects.list();
+window.novelist.projects.openDialog();
+window.novelist.projects.load(projectPath);
 
 // Chapters & Scenes
-window.novelist.chapters.list(projectPath)
-window.novelist.chapters.create(projectPath, name)
-window.novelist.chapters.save(projectPath, chapterId, payload)
-window.novelist.chapters.createScene(projectPath, chapterId, sceneName)
-window.novelist.chapters.saveScene(projectPath, chapterId, sceneId, payload)
+window.novelist.chapters.list(projectPath);
+window.novelist.chapters.create(projectPath, name);
+window.novelist.chapters.save(projectPath, chapterId, payload);
+window.novelist.chapters.createScene(projectPath, chapterId, sceneName);
+window.novelist.chapters.saveScene(projectPath, chapterId, sceneId, payload);
 
 // Characters & Notes
-window.novelist.characters.list(projectPath)
-window.novelist.characters.save(projectPath, characterId, payload)
-window.novelist.notes.list(projectPath)
-window.novelist.notes.save(projectPath, noteId, payload)
+window.novelist.characters.list(projectPath);
+window.novelist.characters.save(projectPath, characterId, payload);
+window.novelist.notes.list(projectPath);
+window.novelist.notes.save(projectPath, noteId, payload);
 
 // Export & Git
-window.novelist.exports.project(projectPath)
-window.novelist.git.init(projectPath)
-window.novelist.git.commit(projectPath, message)
-window.novelist.git.push(projectPath)
-window.novelist.git.pull(projectPath)
+window.novelist.exports.project(projectPath);
+window.novelist.git.init(projectPath);
+window.novelist.git.commit(projectPath, message);
+window.novelist.git.push(projectPath);
+window.novelist.git.pull(projectPath);
 
 // Preferences
-window.novelist.preferences.get()
-window.novelist.preferences.set(values)
+window.novelist.preferences.get();
+window.novelist.preferences.set(values);
 ```
 
-### Available Scripts
+### Scripts disponibles
 
 ```bash
 # Start the app
@@ -287,150 +315,205 @@ npm run dev
 npm run package
 ```
 
-### Development Tips
+### Conseils de développement
 
-- 📝 Editor logic lives in `renderer/app.js`
-- 🎨 Styles are in `renderer/styles.css`
-- 🔧 Main process entry is `electron/main.js` (ESM)
-- 🔒 Preload script is CommonJS for Electron compatibility
-- 🐛 Set `NODE_ENV=development` to auto-open DevTools
-
----
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-**"Could not open project" error**
-- Fixed by guarding missing DOM nodes
-- Open DevTools and check console for detailed stack trace
-- Ensure `project.json` exists in the project folder
-
-**Recent Projects not showing**
-- Novelist scans `~/Documents/Novelist/` on launch
-- Projects must contain a valid `project.json` file
-- Check that the projects directory exists
-
-**Quill editor not loading**
-- App automatically falls back to plain contenteditable editor
-- Tries CDN fallback if local Quill asset is missing
-- Check network connection and browser console
-
-**Git integration errors**
-- Ensure project is initialized (Git → Initialize)
-- System Git must be configured with credentials
-- SSH keys or HTTPS credentials needed for push/pull
-- Check that remote repository exists and is accessible
-
-**Auto-save not working**
-- Auto-save triggers after brief idle period
-- Manual save on window close is guaranteed
-- Check file permissions in project directory
+- 📝 La logique de l'éditeur réside dans `renderer/app.js`
+- 🎨 Les styles sont à l'honneur `renderer/styles.css`
+- 🔧 Le point d'entrée du processus principal est `electron/main.js` (ESM)
+- 🔒 Le script de préchargement est en CommonJS pour la compatibilité avec Electron.
+- 🐛 Prêt `NODE_ENV=development` à ouvrir automatiquement DevTools
 
 ---
 
-## 🗺️ Roadmap
+## 🔧 Dépannage
 
-Future features planned for Novelist:
+### Problèmes courants
 
-- 📚 **Export to EPUB/PDF** - Publish-ready formats
-- 🔍 **Search Across Project** - Find text in all chapters and notes
-- 🎯 **Scene Metadata** - Add tags, status, and custom fields
-- 🔄 **Scene Reordering** - Drag-and-drop scene organization
-- 🎨 **Theming System** - Custom color schemes and fonts
-- ⌨️ **Typewriter Mode** - Zen writing with centered cursor
-- 📊 **Writing Statistics** - Daily goals and progress tracking
-- 🔗 **Internal Links** - Reference characters and notes within text
-- 📱 **Mobile Companion** - Read-only mobile app for reviewing
+**"Erreur « Impossible d'ouvrir le projet »**
+
+- Corrigé en protégeant les nœuds DOM manquants
+- Ouvrez les outils de développement et consultez la console pour obtenir une trace de pile détaillée.
+- Vérifiez que `project.json` le dossier du projet existe.
+
+**Projets récents non affichés**
+
+- Novelist scanne `~/Documents/Novelist/` dès le lancement
+- Les projets doivent contenir un fichier `project.json` valide
+- Vérifiez que le répertoire des projets existe.
+
+**L'éditeur Quill ne se charge pas**
+
+- L'application bascule automatiquement vers l'éditeur de contenu simple.
+- Tente une utilisation du CDN si la ressource Quill locale est indisponible.
+- Vérifiez la connexion réseau et la console du navigateur.
+
+**erreurs d'intégration Git**
+
+- Assurez-vous que le projet est initialisé (Git → Initialiser)
+- Le système Git doit être configuré avec des identifiants.
+- Clés SSH ou identifiants HTTPS nécessaires pour les opérations push/pull
+- Vérifiez que le dépôt distant existe et est accessible.
+
+**La sauvegarde automatique ne fonctionne pas**
+
+- La sauvegarde automatique se déclenche après une brève période d'inactivité.
+- La sauvegarde manuelle à la fermeture de la fenêtre est garantie
+- Vérifiez les permissions des fichiers dans le répertoire du projet
 
 ---
 
-## 🤝 Contributing
+## 🗺️ Feuille de route
 
-Contributions are what make the open-source community amazing! Any contributions you make are **greatly appreciated**.
+Fonctionnalités futures prévues pour Novelist:
 
-### How to Contribute
+- 📚 **Exporter au format EPUB/PDF** - Formats prêts à publier
+- 🔍 **Recherche dans l'ensemble du projet** - Trouvez du texte dans tous les chapitres et les notes
+- 🎯 **Métadonnées de la scène** - Ajoutez des balises, un statut et des champs personnalisés
+- 🔄 **Réorganisation des scènes** - Organisation des scènes par glisser-déposer
+- 🎨 **Système de thèmes** - Schémas de couleurs et polices personnalisés
+- ⌨️ **Mode Machine à écrire** - Écriture zen avec curseur centré
+- 📊 **Statistiques d'écriture** - Suivi des objectifs quotidiens et des progrès
+- 🔗 **Liens internes** - Personnages de référence et notes dans le texte
+- 📱 **Application mobile compagnon** - Application mobile en lecture seule pour la consultation
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+---
 
-### Contribution Guidelines
+## 🤝 Contribuer
 
-- ✅ Keep features scoped and maintain the local-file model
-- ✅ Add clear error handling and UI fallbacks
-- ✅ Test on macOS at minimum; Linux/Windows fixes appreciated
-- ✅ Follow existing code style and conventions
-- ✅ Write meaningful commit messages
-- ✅ Update documentation as needed
-- ✅ Add comments for complex logic
+Ce sont les contributions qui rendent la communauté open source extraordinaire ! Toute contribution est . **grandement appréciée**.
 
-### Development Standards
+### Comment contribuer
 
-- Use ESM in main process, CommonJS in preload
-- Maintain IPC security with context isolation
-- Preserve Markdown storage format
-- Keep UI responsive during file operations
-- Test with multiple projects and edge cases
+1. Fork du projet
+2. Créez votre branche de fonctionnalités (`git checkout -b feature/AmazingFeature`)
+3. Validez vos modifications (`git commit -m 'Add some AmazingFeature'`)
+4. Pousser vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une demande de fusion
+
+### Lignes directrices relatives aux contributions
+
+- ✅ Limiter la portée des fonctionnalités et maintenir le modèle de fichier local
+- ✅ Ajouter une gestion claire des erreurs et des solutions de repli pour l'interface utilisateur
+- ✅ Testé au minimum sur macOS ; les corrections pour Linux/Windows sont les bienvenues
+- ✅ Respectez les conventions et styles de codage existants
+- ✅ Rédigez des messages de commit pertinents
+- ✅ Mettre à jour la documentation au besoin
+- ✅ Ajoutez des commentaires pour les logiques complexes
+
+### Normes de développement
+
+- Utilisez ESM dans le processus principal et CommonJS dans le préchargement.
+
+- Maintenir la sécurité IPC grâce à l'isolation du contexte
+- Préserver le format de stockage Markdown
+- Maintenir la réactivité de l'interface utilisateur pendant les opérations sur les fichiers
+- Testez avec plusieurs projets et cas limites.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **Unlicense** - see the [LICENSE](LICENSE) file for details.
+Ce projet est distribué sous licence GNU - **GNU** - consultez le fichier [LICENSE](LICENSE) pour plus de détails.
 
-### License Summary
+📜 **Aucune garantie:**
 
-This software is released into the **public domain**. You are free to do whatever you want with it.
-
-✅ **You CAN:**
-- Use for any purpose (personal, commercial, etc.)
-- Modify and adapt the code however you like
-- Distribute and share freely
-- Use in proprietary software
-- Sell products built with this code
-- Remove all attribution and copyright notices
-- Relicense under any terms you choose
-
-❌ **You DON'T HAVE TO:**
-- Give credit or attribution
-- Include the license
-- Share your modifications
-- Release source code
-
-📜 **No Warranty:**
-- Software provided "as is" without warranty of any kind
+- Logiciel fourni « tel quel », sans aucune garantie.
 
 ---
 
 ## 💖 Credits
 
-### Created By
+### Créé par
 
-**coeng24** - [GitHub](https://github.com/cogrow4)
+**Erik-42** - [GitHub](https://github.com/Erik-42)
 
-### Technologies Used
+### Technologies utilisées
 
-- [Electron](https://www.electronjs.org/) - Cross-platform desktop framework
-- [Quill](https://quilljs.com/) - Rich text editor
-- [simple-git](https://github.com/steveukx/git-js) - Git integration for Node.js
-- [electron-store](https://github.com/sindresorhus/electron-store) - Persistent storage
-- [Flaticon](https://www.flaticon.com/) - Application icons
+- [Electron](https://www.electronjs.org/) - Framework de bureau multiplateforme
+- [Quill](https://quilljs.com/) - Éditeur de texte enrichi
+- [simple-git](https://github.com/steveukx/git-js) - Intégration Git pour Node.js
+- [electron-store](https://github.com/sindresorhus/electron-store) - Stockage persistant
+- [Flaticon](https://www.flaticon.com/) - Icônes d'application
 
 ### Inspiration
 
-Built for writers who need a focused, distraction-free environment without sacrificing powerful organizational tools. Inspired by Scrivener, Ulysses, and the simplicity of Markdown.
+Conçu pour les écrivains qui ont besoin d'un environnement de travail concentré et sans distraction, sans pour autant renoncer à des outils d'organisation performants. Inspiré par Scrivener, Ulysses et la simplicité de Markdown.
 
 ---
 
 <div align="center">
 
-### ⭐ Star this repository if you find it helpful!
+### ⭐ Mettez une étoile à ce dépôt si vous le trouvez utile !
 
-**Made with ❤️ for writers everywhere**
+**Conçu pour les écrivains du monde entier**
 
-[⬆ Back to Top](#-novelist)
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 </div>
+
+## 📬 Contact
+
+<div align="center">
+
+[![wakatime repo](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/d97aac05-6bec-4815-93b0-ad332aec523b.svg)](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/d97aac05-6bec-4815-93b0-ad332aec523b)
+
+[![GitHub followers][github followers-shield]][github followers-url]
+[![Stargazers][stars-shield]][stars-url]
+
+[![wakatime](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5.svg)](https://wakatime.com/@f84d00d8-fee3-4ca3-803d-3daa3c7053a5)
+
+[![Github Badge][github badge-shield]][github badge-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
+[https://buymeacoffee.com/meseneriko](https://buymeacoffee.com/meseneriko)
+
+<a href="https://buymeacoffee.com/meseneriko">
+    <img src="assets/img/logos-erik/bmc_qr.png" alt="Buy My Coffee" width="20%" style="background-color:grey">
+</a>  
+<p></p>
+<p></p>
+<a href = 'https://basillecorp.dev'> <img width = '32px' align= 'center' src="https://raw.githubusercontent.com/rahulbanerjee26/githubAboutMeGenerator/main/icons/portfolio.png"/> basillecorp.dev</a>
+
+mesen.erik@gmail.com
+
+</div>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<!-- MARKDOWN LINKS & IMAGES -->
+
+[github followers-shield]: https://img.shields.io/github/followers/erik-42?style=social
+[github followers-url]: https://github.com/erik-42?tab=followers
+[stars-shield]: https://img.shields.io/github/stars/erik-42/Novelist?style=social
+[stars-url]: https://github.com/Erik-42/easy-novels/stargazers
+[github repo-shield]: https://img.shields.io/badge/repo-basillecorp--website-blue
+[github badge-shield]: https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
+[github badge-url]: https://github.com/erik-42
+[linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
+[linkedin-url]: https://www.linkedin.com/in/erik-mesen/
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[wakatime-shield]: https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5.svg
+[wakatime-url]: https://wakatime.com/@f84d00d8-fee3-4ca3-803d-3daa3c7053a5
+[github badge-shield]: https://img.shields.io/badge/Github-Erik--42-155?style=for-the-badge&logo=github
+[github badge-url]: https://github.com/Erik-42
+[github repo-shield]: https://img.shields.io/badge/Repositories-123-blue
+[github repo-url]: https://github.com/Erik-42/Erik-42?tab=repositories
+[github followers-shield]: https://img.shields.io/github/followers/Erik-42
+[github followers-url]: https://github.com/followers/Erik-42
+[contributors-shield]: https://img.shields.io/github/contributors/Erik-42/easy-novels
+[contributors-url]: https://github.com/Erik-42/easy-novels/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Erik-42/easy-novels
+[forks-url]: https://github.com/Erik-42/easy-novels/forks
+[issues-shield]: https://img.shields.io/github/issues-raw/Erik-42/easy-novels
+[issues-url]: https://github.com/Erik-42/easy-novels/issues
+[stars-shield]: https://img.shields.io/github/stars/Erik-42
+[stars-url]: https://github.com/Erik-42?tab=stars
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://www.linkedin.com/in/erik-mesen/
+[html-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[html-url]: https://html.spec.whatwg.org/
+[css-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[css-url]: https://www.w3.org/TR/CSS/#css
+[javascript-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
