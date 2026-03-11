@@ -8,7 +8,7 @@
   <h1>📚 Easy-Novels</h1>
   <h4>Version 1.0.0</h4>
   <a href="https://github.com/Erik-42">
-    <img src="./assets/logo/logo-spg.jpeg" alt="Logo Files-Project-Generation" width="150" height="150">
+    <img src="./assets/img/wip.png" alt="Logo Easy-Novels" width="150" height="150">
   </a>
 </div>
 
@@ -18,14 +18,14 @@
 
 <div align="center">
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Issues][issues-shield]][issues-url]
+[![GitHub stars](https://img.shields.io/github/stars/Erik-42/easy-novels?style=for-the-badge&logo=github&color=6366f1)](https://github.com/Erik-42/easy-novels/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Erik-42/easy-novels?style=for-the-badge&logo=github&color=6366f1)](https://github.com/Erik-42/easy-novels/network)
+[![GitHub issues](https://img.shields.io/github/issues/Erik-42/easy-novels?style=for-the-badge&logo=github&color=6366f1)](https://github.com/Erik-42/easy-novels/issues)
 <br/>
 
-Repo: [![wakatime](https://wakatime.com/badge/github/Erik-42/structure-project-generator.svg)](https://wakatime.com/badge/github/Erik-42/structure-project-generator)
+Repo: [![wakatime](https://wakatime.com/badge/github/Erik-42/easy-novels.svg)](https://wakatime.com/badge/github/Erik-42/easy-novels)
 
-Project: [![wakatime](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/4560400d-1de2-4e4e-9af4-393e96928dc8.svg)](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/4560400d-1de2-4e4e-9af4-393e96928dc8)
+Project: [![wakatime](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/a67896cc-3846-42b3-8c9f-7e6abd84e21a.svg)](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/a67896cc-3846-42b3-8c9f-7e6abd84e21a)
 
 </div>
 
@@ -33,10 +33,7 @@ Project: [![wakatime](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3d
 
 _Votre compagnon créatif pour écrire des romans longs avec clarté et précision._
 
-[![GitHub stars](https://img.shields.io/github/stars/Erik-42/easy-novels?style=for-the-badge&logo=github&color=6366f1)](https://github.com/Erik-42/easy-novels/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/Erik-42/easy-novels?style=for-the-badge&logo=github&color=6366f1)](https://github.com/Erik-42/easy-novels/network)
-[![GitHub issues](https://img.shields.io/github/issues/Erik-42/easy-novels?style=for-the-badge&logo=github&color=6366f1)](https://github.com/Erik-42/easy-novels/issues)
-[![License](https://img.shields.io/badge/License-Unlicense-6366f1?style=for-the-badge)](./LICENSE)
+## Technologie utilisées
 
 [![Built with Electron](https://img.shields.io/badge/Built_with-Electron-47848f?style=for-the-badge&logo=electron)](https://www.electronjs.org/)
 [![Powered by Quill](https://img.shields.io/badge/Powered_by-Quill-1d4ed8?style=for-the-badge)](https://quilljs.com/)
@@ -413,7 +410,9 @@ Ce sont les contributions qui rendent la communauté open source extraordinaire 
 
 ## 📄 License
 
-Ce projet est distribué sous licence GNU - **GNU** - consultez le fichier [LICENSE](LICENSE) pour plus de détails.
+Distributed under the GNU GENERAL PUBLIC LICENSE
+Version 3.<br>
+See `LICENSE.txt` for more information.
 
 📜 **Aucune garantie:**
 
@@ -455,8 +454,6 @@ Conçu pour les écrivains qui ont besoin d'un environnement de travail concentr
 
 <div align="center">
 
-[![wakatime repo](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/d97aac05-6bec-4815-93b0-ad332aec523b.svg)](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/d97aac05-6bec-4815-93b0-ad332aec523b)
-
 [![GitHub followers][github followers-shield]][github followers-url]
 [![Stargazers][stars-shield]][stars-url]
 
@@ -490,30 +487,3 @@ mesen.erik@gmail.com
 [github badge-url]: https://github.com/erik-42
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
 [linkedin-url]: https://www.linkedin.com/in/erik-mesen/
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-
-[wakatime-shield]: https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5.svg
-[wakatime-url]: https://wakatime.com/@f84d00d8-fee3-4ca3-803d-3daa3c7053a5
-[github badge-shield]: https://img.shields.io/badge/Github-Erik--42-155?style=for-the-badge&logo=github
-[github badge-url]: https://github.com/Erik-42
-[github repo-shield]: https://img.shields.io/badge/Repositories-123-blue
-[github repo-url]: https://github.com/Erik-42/Erik-42?tab=repositories
-[github followers-shield]: https://img.shields.io/github/followers/Erik-42
-[github followers-url]: https://github.com/followers/Erik-42
-[contributors-shield]: https://img.shields.io/github/contributors/Erik-42/easy-novels
-[contributors-url]: https://github.com/Erik-42/easy-novels/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Erik-42/easy-novels
-[forks-url]: https://github.com/Erik-42/easy-novels/forks
-[issues-shield]: https://img.shields.io/github/issues-raw/Erik-42/easy-novels
-[issues-url]: https://github.com/Erik-42/easy-novels/issues
-[stars-shield]: https://img.shields.io/github/stars/Erik-42
-[stars-url]: https://github.com/Erik-42?tab=stars
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://www.linkedin.com/in/erik-mesen/
-[html-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[html-url]: https://html.spec.whatwg.org/
-[css-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[css-url]: https://www.w3.org/TR/CSS/#css
-[javascript-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
