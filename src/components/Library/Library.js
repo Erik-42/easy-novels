@@ -1,4 +1,5 @@
 import {
+  computeProjectWordCount,
   createProject,
   deleteProject,
   listProjects,
@@ -20,6 +21,9 @@ export function Library() {
           <h2 class="${LIBRARY_BLOCK}__item-title">${project.title}</h2>
           <p class="${LIBRARY_BLOCK}__item-meta">
             Créé le ${new Date(project.createdAt).toLocaleDateString("fr-FR")}
+          </p>
+          <p class="${LIBRARY_BLOCK}__item-words">
+            ${computeProjectWordCount(project).toLocaleString("fr-FR")} mots
           </p>
         </div>
         <div class="${LIBRARY_BLOCK}__item-tags">

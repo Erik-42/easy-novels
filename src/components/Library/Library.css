@@ -97,6 +97,13 @@
 .library__item-meta {
   font-size: 0.75rem;
   color: #9ca3af;
+  margin-bottom: 0.2rem;
+}
+
+.library__item-words {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #a5b4fc;
 }
 
 .library__item-tags {

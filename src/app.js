@@ -6,12 +6,10 @@ import { Schedule, hydrateScheduleEvents } from "./components/Schedule/Schedule.
 import { computeProjectWordCount, getDb, getProject, listProjects, setCurrentProject } from "./services/db.js";
 import { exportProjectAsMarkdown } from "./services/exportMarkdown.js";
 import { Home, hydrateHomeEvents } from "./components/Home/Home.js";
-import { Personnages, hydratePersonnagesEvents } from "./components/Personnages/Personnages.js";
 import { Notes, hydrateNotesEvents } from "./components/Notes/Notes.js";
 import { modalAlert } from "./components/Modal/Modal.js";
 
 const BOOK_VIEWS = [
-  { id: "personnages", label: "Création de personnages", description: "Créer et gérer vos personnages" },
   { id: "outline", label: "Esquisser", description: "Intrigue, personnages, univers" },
   { id: "writing", label: "Écrire", description: "Scènes et texte du manuscrit" },
   { id: "organize", label: "Organiser", description: "Actes, parties, chapitres" },
@@ -47,8 +45,6 @@ function renderView(route, project) {
   if (route.name === "library") return Library();
   if (!project) return Library();
   switch (route.view) {
-    case "personnages":
-      return Personnages(project);
     case "outline":
       return Outline(project);
     case "writing":
@@ -120,9 +116,9 @@ function render() {
       ${
         project
           ? `<div class="app__topbar">
+                <div class="app__topbar-spacer"></div>
                 <div class="app__topbar-main">
                   <div class="app__topbar-title">${project.title}</div>
-                  <div class="app__topbar-subtitle">${computeProjectWordCount(project).toLocaleString("fr-FR")} mots au total</div>
                 </div>
                 <div class="app__topbar-actions">
                   <button class="app__button" type="button" data-topbar-library="true">Retour bibliothèque</button>
@@ -191,7 +187,6 @@ function render() {
   }
 
   hydrateLibraryEvents(root);
-  hydratePersonnagesEvents(root);
   hydrateNotesEvents(root);
   hydrateOutlineEvents(root);
   hydrateWritingEvents(root);
