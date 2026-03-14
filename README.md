@@ -8,7 +8,7 @@
   <h1>Easy-Novel</h1>
   <h4>Version 1.0.0</h4>
   <a href="https://github.com/Erik-42">
-    <img src="./assets/logo/logo-easy-novel.png" alt="Logo Easy-Novel" width="150" height="150">
+    <img src="./assets/img/intro.jpg" alt="Logo Easy-Novel" width="150" height="150">
   </a>
 </div>
 
@@ -22,8 +22,8 @@
 [![Forks][forks-shield]][forks-url]
 [![Issues][issues-shield]][issues-url]
 <br/>
-Repo: [![wakatime](https://wakatime.com/badge/github/Erik-42/web-novelist-app.svg)](https://wakatime.com/badge/github/Erik-42/web-novelist-app)
-Project: [![wakatime](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/4560400d-1de2-4e4e-9af4-393e96928dc8.svg)](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/4560400d-1de2-4e4e-9af4-393e96928dc8)
+Repo: [![wakatime](https://wakatime.com/badge/github/Erik-42/easy-novels.svg)](https://wakatime.com/badge/github/Erik-42/easy-novels)
+Project: [![wakatime](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/a67896cc-3846-42b3-8c9f-7e6abd84e21a.svg)](https://wakatime.com/badge/user/f84d00d8-fee3-4ca3-803d-3daa3c7053a5/project/a67896cc-3846-42b3-8c9f-7e6abd84e21a)
 
 </div>
 
@@ -45,8 +45,6 @@ python -m http.server 9000
 ```
 
 3. Ouvrir dans le navigateur : **http://localhost:9000/index-web.html**
-
-> **Note** : Le fichier `index.html` à la racine correspond à l’ancienne version Flutter. L’application Easy-Novel est dans **index-web.html**.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -168,8 +166,8 @@ mesen.erik@gmail.com
 [wakatime-url]: https://wakatime.com/@f84d00d8-fee3-4ca3-803d-3daa3c7053a5
 [github badge-shield]: https://img.shields.io/badge/Github-Erik--42-155?style=for-the-badge&logo=github
 [github badge-url]: https://github.com/Erik-42
-[github repo-shield]: https://img.shields.io/badge/Repositories-68-blue
-[github repo-url]: https://github.com/Erik-42/Erik-42?tab=repositories
+[github repo-shield]: https://img.shields.io/badge/Repositories--blue
+[github repo-url]: https://github.com/Erik-124/Erik-42?tab=repositories
 [github followers-shield]: https://img.shields.io/github/followers/Erik-42
 [github followers-url]: https://github.com/followers/Erik-42
 [contributors-shield]: https://img.shields.io/github/contributors/Erik-42/web-novelist-app
