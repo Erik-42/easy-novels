@@ -1,0 +1,293 @@
+.app {
+  display: flex;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: #050816;
+  color: #e4e7ec;
+}
+
+.app__sidebar {
+  width: 260px;
+  padding: 1.5rem 1.25rem;
+  border-right: 1px solid rgba(148, 163, 184, 0.35);
+  background: radial-gradient(circle at top left, #111827 0, #020617 45%);
+  box-shadow: 0 0 40px rgba(15, 23, 42, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.app__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.app__brand-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+}
+
+.app__brand-subtitle {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.app__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.app__nav-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.app__nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  color: #d1d5db;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease;
+}
+
+.app__nav-item:hover {
+  background-color: rgba(15, 23, 42, 0.85);
+  border-color: rgba(148, 163, 184, 0.6);
+  transform: translateY(-1px);
+}
+
+.app__nav-item--active {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  border-color: transparent;
+  color: #f9fafb;
+  box-shadow: 0 10px 30px rgba(79, 70, 229, 0.35);
+}
+
+.app__nav-item-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.app__nav-item-title {
+  font-weight: 500;
+}
+
+.app__nav-item-subtitle {
+  font-size: 0.75rem;
+  color: rgba(209, 213, 219, 0.7);
+}
+
+.app__nav-item-tag {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background-color: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.5);
+}
+
+.app__sidebar-footer {
+  margin-top: auto;
+  font-size: 0.7rem;
+  color: #6b7280;
+}
+
+.app__sidebar-footer-strong {
+  color: #d1d5db;
+}
+
+.app__content {
+  flex: 1;
+  padding: 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-x: hidden;
+}
+
+.app__topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.95));
+}
+
+.app__topbar-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.app__topbar-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.app__topbar-subtitle {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.app__topbar-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.app__content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.app__content-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.app__content-subtitle {
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.app__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  font-size: 0.7rem;
+  color: #e5e7eb;
+}
+
+.app__badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #22c55e, #16a34a);
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.75);
+}
+
+.app__badge-label {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.app__view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.app__view-placeholder {
+  border-radius: 1rem;
+  border: 1px dashed rgba(148, 163, 184, 0.6);
+  padding: 1.25rem 1.5rem;
+  background: radial-gradient(circle at top right, rgba(55, 65, 81, 0.45), rgba(15, 23, 42, 0.95));
+  color: #e5e7eb;
+}
+
+.app__view-placeholder-title {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.app__view-placeholder-text {
+  font-size: 0.9rem;
+  color: #d1d5db;
+}
+
+.app__view-placeholder-hint {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.app__layout-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.app__layout-column {
+  flex: 1;
+  min-width: 260px;
+}
+
+.app__button {
+  border-radius: 999px;
+  font-size: 0.85rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  cursor: pointer;
+  background-color: transparent;
+  color: #e5e7eb;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease;
+}
+
+.app__button:hover {
+  background-color: rgba(15, 23, 42, 0.85);
+  transform: translateY(-1px);
+}
+
+.app__button--primary {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  border-color: transparent;
+}
+
+.app__button--danger {
+  border-color: rgba(248, 113, 113, 0.7);
+  color: #fecaca;
+}
+
+@media (max-width: 860px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .app__sidebar {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .app__nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .app__nav-item {
+    padding-inline: 0.5rem;
+  }
+}
+
