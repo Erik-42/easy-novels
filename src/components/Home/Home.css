@@ -1,0 +1,86 @@
+.home {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: radial-gradient(ellipse 80% 60% at 50% 20%, rgba(79, 70, 229, 0.25), transparent 50%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(99, 102, 241, 0.12), transparent 50%),
+    #050816;
+  color: #e4e7ec;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.home__inner {
+  max-width: 520px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.home__title {
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+  margin: 0;
+  text-shadow: 0 0 40px rgba(99, 102, 241, 0.3);
+}
+
+.home__tagline {
+  font-size: 1.1rem;
+  color: #a5b4fc;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+.home__description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.home__actions {
+  margin-top: 0.5rem;
+}
+
+.home__cta {
+  display: inline-block;
+  padding: 0.75rem 1.75rem;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #f9fafb;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  border: none;
+  box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.home__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(79, 70, 229, 0.5);
+}
+
+.home__features {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 1.25rem;
+}
+
+.home__feature {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.6);
+}

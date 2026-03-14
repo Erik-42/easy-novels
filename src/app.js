@@ -3,19 +3,34 @@ import { Outline, hydrateOutlineEvents } from "./components/Outline/Outline.js";
 import { Writing, hydrateWritingEvents } from "./components/Writing/Writing.js";
 import { Organize, hydrateOrganizeEvents } from "./components/Organize/Organize.js";
 import { Schedule, hydrateScheduleEvents } from "./components/Schedule/Schedule.js";
-import { computeProjectWordCount, getDb, getProject, setCurrentProject } from "./services/db.js";
+import { computeProjectWordCount, getDb, getProject, listProjects, setCurrentProject } from "./services/db.js";
 import { exportProjectAsMarkdown } from "./services/exportMarkdown.js";
+import { Home, hydrateHomeEvents } from "./components/Home/Home.js";
+import { Personnages, hydratePersonnagesEvents } from "./components/Personnages/Personnages.js";
+import { Notes, hydrateNotesEvents } from "./components/Notes/Notes.js";
+import { modalAlert } from "./components/Modal/Modal.js";
 
 const BOOK_VIEWS = [
+  { id: "personnages", label: "Création de personnages", description: "Créer et gérer vos personnages" },
   { id: "outline", label: "Esquisser", description: "Intrigue, personnages, univers" },
   { id: "writing", label: "Écrire", description: "Scènes et texte du manuscrit" },
   { id: "organize", label: "Organiser", description: "Actes, parties, chapitres" },
   { id: "schedule", label: "Programmer", description: "Objectifs et progression" },
+  { id: "notes", label: "Notes", description: "Notes et idées" },
+];
+
+/** Liste unifiée pour les boutons de la section (Bibliothèque + vues livre). */
+const SECTION_NAV_ITEMS = [
+  { id: "library", label: "Bibliothèque", description: "Tous vos livres", isLibrary: true },
+  ...BOOK_VIEWS.map((v) => ({ ...v, isLibrary: false })),
 ];
 
 function parseRoute() {
   const hash = window.location.hash.replace(/^#/, "");
-  if (!hash || hash === "library") {
+  if (!hash || hash === "home") {
+    return { name: "home" };
+  }
+  if (hash === "library") {
     return { name: "library" };
   }
   const parts = hash.split("/").filter(Boolean);
@@ -25,30 +40,15 @@ function parseRoute() {
     const valid = BOOK_VIEWS.some((v) => v.id === view) ? view : "outline";
     return { name: "book", projectId, view: valid };
   }
-  return { name: "library" };
-}
-
-function renderSidebarNavItem(view, currentView) {
-  const isActive = currentView === view.id;
-  return `
-    <button
-      class="app__nav-item ${isActive ? "app__nav-item--active" : ""}"
-      data-book-view="${view.id}"
-      type="button"
-    >
-      <span class="app__nav-item-label">
-        <span class="app__nav-item-title">${view.label}</span>
-        <span class="app__nav-item-subtitle">${view.description}</span>
-      </span>
-      <span class="app__nav-item-tag">MODE</span>
-    </button>
-  `;
+  return { name: "home" };
 }
 
 function renderView(route, project) {
   if (route.name === "library") return Library();
   if (!project) return Library();
   switch (route.view) {
+    case "personnages":
+      return Personnages(project);
     case "outline":
       return Outline(project);
     case "writing":
@@ -57,6 +57,8 @@ function renderView(route, project) {
       return Organize(project);
     case "schedule":
       return Schedule(project);
+    case "notes":
+      return Notes(project);
     default:
       return Outline(project);
   }
@@ -67,6 +69,13 @@ function render() {
   if (!root) return;
 
   const route = parseRoute();
+
+  if (route.name === "home") {
+    root.innerHTML = Home();
+    hydrateHomeEvents(root);
+    return;
+  }
+
   const db = getDb();
   const projectId = route.name === "book" ? route.projectId : db.currentProjectId;
   const project = projectId ? getProject(projectId) : null;
@@ -87,22 +96,21 @@ function render() {
     <div class="app">
       <aside class="app__sidebar">
         <div class="app__brand">
-          <div class="app__brand-title">Easy-Novel</div>
+          <a href="#home" class="app__brand-title app__brand-title--link">Easy-Novel</a>
           <div class="app__brand-subtitle">Écrire, structurer, avancer</div>
         </div>
         <div class="app__nav">
           <div class="app__nav-label">Sections</div>
-          ${
-            route.name === "library"
-              ? `<button class="app__nav-item app__nav-item--active" type="button" data-nav-library="true">
-                  <span class="app__nav-item-label">
-                    <span class="app__nav-item-title">Bibliothèque</span>
-                    <span class="app__nav-item-subtitle">Tous vos livres</span>
-                  </span>
-                  <span class="app__nav-item-tag">HOME</span>
-                </button>`
-              : BOOK_VIEWS.map((view) => renderSidebarNavItem(view, route.view)).join("")
-          }
+          ${SECTION_NAV_ITEMS.map(
+            (item) => `
+          <button class="app__nav-item ${item.isLibrary ? route.name === "library" : route.name === "book" && route.view === item.id ? "app__nav-item--active" : ""}" type="button" ${item.isLibrary ? 'data-nav-library="true"' : `data-nav-view="${item.id}"`}>
+            <span class="app__nav-item-label">
+              <span class="app__nav-item-title">${item.label}</span>
+              <span class="app__nav-item-subtitle">${item.description}</span>
+            </span>
+            <span class="app__nav-item-tag">SECTION</span>
+          </button>`
+          ).join("")}
         </div>
         <div class="app__sidebar-footer">
           <span class="app__sidebar-footer-strong">Conseil :</span> sauvegardez vos projets régulièrement.
@@ -147,15 +155,24 @@ function render() {
     });
   }
 
-  root.querySelectorAll("[data-book-view]").forEach((button) => {
+  root.querySelectorAll("[data-nav-view]").forEach((button) => {
     button.addEventListener("click", () => {
-      const view = button.getAttribute("data-book-view");
-      const activeProjectId = project?.id;
-      if (!activeProjectId) {
-        window.location.hash = "#library";
+      const view = button.getAttribute("data-nav-view");
+      if (route.name === "book" && project?.id) {
+        window.location.hash = `#book/${project.id}/${view}`;
         return;
       }
-      window.location.hash = `#book/${activeProjectId}/${view}`;
+      const projects = listProjects();
+      if (projects.length === 0) {
+        modalAlert({
+          title: "Aucun livre",
+          message: "Créez d’abord un roman dans la bibliothèque pour accéder à cette section.",
+          confirmLabel: "OK",
+        });
+        return;
+      }
+      setCurrentProject(projects[0].id);
+      window.location.hash = `#book/${projects[0].id}/${view}`;
     });
   });
 
@@ -174,6 +191,8 @@ function render() {
   }
 
   hydrateLibraryEvents(root);
+  hydratePersonnagesEvents(root);
+  hydrateNotesEvents(root);
   hydrateOutlineEvents(root);
   hydrateWritingEvents(root);
   hydrateOrganizeEvents(root);

@@ -1,0 +1,151 @@
+.personnages {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.personnages__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.personnages__header-main {
+  max-width: 520px;
+}
+
+.personnages__headline {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.personnages__description {
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.personnages__header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.personnages__primary-button {
+  border-radius: 999px;
+  font-size: 0.85rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #f9fafb;
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+  transition:
+    background-color 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.15s ease;
+}
+
+.personnages__primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(79, 70, 229, 0.5);
+}
+
+.personnages__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.personnages__item {
+  border-radius: 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  padding: 0.9rem 1rem;
+  background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.personnages__item-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.personnages__item-meta {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  line-height: 1.35;
+}
+
+.personnages__item-tags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.personnages__item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: flex-end;
+}
+
+.personnages__item-button {
+  border-radius: 999px;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid rgba(148, 163, 184, 0.75);
+  cursor: pointer;
+  background-color: transparent;
+  color: #e5e7eb;
+}
+
+.personnages__item-button:hover {
+  background-color: rgba(15, 23, 42, 0.85);
+}
+
+.personnages__item-button--danger {
+  border-color: rgba(248, 113, 113, 0.7);
+  color: #fecaca;
+}
+
+.personnages__empty {
+  border-radius: 0.9rem;
+  border: 1px dashed rgba(148, 163, 184, 0.7);
+  padding: 1.25rem 1.5rem;
+  background: radial-gradient(circle at center, rgba(31, 41, 55, 0.7), rgba(15, 23, 42, 0.9));
+}
+
+.personnages__empty-title {
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+
+.personnages__empty-text {
+  font-size: 0.9rem;
+  color: #d1d5db;
+}
+
+@media (max-width: 640px) {
+  .personnages__header {
+    flex-direction: column;
+  }
+
+  .personnages__header-actions {
+    width: 100%;
+  }
+
+  .personnages__header-actions button {
+    flex: 1;
+    justify-content: center;
+  }
+}

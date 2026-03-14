@@ -59,6 +59,11 @@ function migrateFromLegacyIfNeeded() {
         goalWords: 50000,
         dueDate: null,
       },
+      notes: {
+        noteOrder: [],
+        notes: {},
+        selectedNoteId: null,
+      },
     };
   });
   const firstId = legacyList[0]?.id ?? null;
@@ -119,6 +124,11 @@ export function createProject({ title }) {
       schedule: {
         goalWords: 50000,
         dueDate: null,
+      },
+      notes: {
+        noteOrder: [],
+        notes: {},
+        selectedNoteId: null,
       },
     };
     db.currentProjectId = id;
