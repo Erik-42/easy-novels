@@ -40,12 +40,22 @@ export default function OutlinePersonnages({ projectId }) {
   const [formImportance, setFormImportance] = useState('');
   const [formMotivation, setFormMotivation] = useState('');
   const [formDescription, setFormDescription] = useState('');
+  const [formBiographie, setFormBiographie] = useState('');
+  const [formObjectif, setFormObjectif] = useState('');
+  const [formConflit, setFormConflit] = useState('');
+  const [formImages, setFormImages] = useState([]);
+  const [formImageIndex, setFormImageIndex] = useState(0);
+  const [formImageInput, setFormImageInput] = useState('');
   const [modalDelete, setModalDelete] = useState(false);
   const deleteTargetRef = useRef(null);
 
   const isNew = selectedId === MODE_NEW;
   const selectedCharacter = selectedId && selectedId !== MODE_NEW
     ? characters.find((c) => c._id === selectedId)
+    : null;
+
+  const currentImage = formImages.length
+    ? (formImages[formImageIndex] ?? formImages[0])
     : null;
 
   useEffect(() => {
@@ -55,14 +65,91 @@ export default function OutlinePersonnages({ projectId }) {
       setFormImportance('');
       setFormMotivation('');
       setFormDescription('');
+      setFormBiographie('');
+      setFormObjectif('');
+      setFormConflit('');
+      setFormImages([]);
+      setFormImageIndex(0);
+      setFormImageInput('');
     } else if (selectedCharacter) {
       setFormName(selectedCharacter.title ?? '');
       setFormRole(selectedCharacter.role ?? '');
       setFormImportance(selectedCharacter.importance ?? '');
       setFormMotivation(selectedCharacter.motivation ?? '');
       setFormDescription(selectedCharacter.summary ?? '');
+      setFormBiographie(selectedCharacter.biographie ?? '');
+      setFormObjectif(selectedCharacter.objectif ?? '');
+      setFormConflit(selectedCharacter.conflit ?? '');
+      const imgs = Array.isArray(selectedCharacter.images)
+        ? selectedCharacter.images
+        : selectedCharacter.image
+          ? [selectedCharacter.image]
+          : [];
+      setFormImages(imgs);
+      setFormImageIndex(0);
+      setFormImageInput('');
     }
   }, [selectedId, selectedCharacter?._id, isNew]);
+
+  const saveCharacterImages = async (nextImages) => {
+    if (!selectedCharacter) return;
+    const filtered = (nextImages ?? []).filter((u) => u && String(u).trim());
+    await updateItem(selectedCharacter._id, {
+      title: formName.trim() || 'Sans nom',
+      role: formRole.trim(),
+      importance: formImportance || undefined,
+      motivation: formMotivation.trim() || undefined,
+      summary: formDescription.trim() || undefined,
+      biographie: formBiographie.trim() || undefined,
+      objectif: formObjectif.trim() || undefined,
+      conflit: formConflit.trim() || undefined,
+      images: filtered,
+      image: filtered[0]?.trim() || undefined,
+    });
+  };
+
+  const handleImageFile = (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const url = reader.result ?? '';
+      const next = [...formImages, url];
+      setFormImages(next);
+      setFormImageIndex(next.length - 1);
+      saveCharacterImages(next);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleAddImageUrl = (e) => {
+    e?.preventDefault();
+    const url = formImageInput.trim();
+    if (!url) return;
+    setFormImageInput('');
+    const next = [...formImages, url];
+    setFormImages(next);
+    setFormImageIndex(next.length - 1);
+    saveCharacterImages(next);
+  };
+
+  const handleRemoveCurrentImage = () => {
+    if (!formImages.length) return;
+    const next = formImages.filter((_, i) => i !== formImageIndex);
+    const newIndex = next.length ? Math.min(formImageIndex, next.length - 1) : 0;
+    setFormImages(next);
+    setFormImageIndex(newIndex);
+    saveCharacterImages(next);
+  };
+
+  const handlePrevImage = () => {
+    setFormImageIndex((i) => (i > 0 ? i - 1 : formImages.length - 1));
+  };
+
+  const handleNextImage = () => {
+    setFormImageIndex((i) => (i < formImages.length - 1 ? i + 1 : 0));
+  };
 
   const selectCharacter = (id) => {
     setSelectedId(id);
@@ -87,6 +174,11 @@ export default function OutlinePersonnages({ projectId }) {
         role: formRole.trim(),
         importance: formImportance || undefined,
         motivation: formMotivation.trim() || undefined,
+        biographie: formBiographie.trim() || undefined,
+        objectif: formObjectif.trim() || undefined,
+        conflit: formConflit.trim() || undefined,
+        images: formImages.filter((u) => u && String(u).trim()),
+        image: formImages[0]?.trim() || undefined,
       });
       setSelectedId(itemId);
     }
@@ -101,6 +193,11 @@ export default function OutlinePersonnages({ projectId }) {
       importance: formImportance || undefined,
       motivation: formMotivation.trim() || undefined,
       summary: formDescription.trim(),
+      biographie: formBiographie.trim() || undefined,
+      objectif: formObjectif.trim() || undefined,
+      conflit: formConflit.trim() || undefined,
+      images: formImages.filter((u) => u && String(u).trim()),
+      image: formImages[0]?.trim() || undefined,
     });
   };
 
@@ -124,62 +221,129 @@ export default function OutlinePersonnages({ projectId }) {
   return (
     <div className="outline-personnages">
       <div className="outline-personnages__layout">
-        <aside className="outline-personnages__sidebar">
-          <div className="outline-personnages__sidebar-header">
-            <div className="outline-personnages__sidebar-title">Personnages</div>
-            <button
-              type="button"
-              className="outline-personnages__sidebar-action"
-              onClick={() => {
-                ensureCategory().then(() => selectCharacter(MODE_NEW));
-              }}
-              disabled={!personnagesCategory}
-            >
-              + Ajouter
-            </button>
-          </div>
-          {!personnagesCategory ? (
-            <div className="outline-personnages__sidebar-empty">
-              <p>Aucune catégorie « Personnages ».</p>
+        <div className="outline-personnages__left">
+          <aside className="outline-personnages__sidebar">
+            <div className="outline-personnages__sidebar-header">
+              <div className="outline-personnages__sidebar-title">Personnages</div>
               <button
                 type="button"
-                className="outline-personnages__btn-create-cat"
-                onClick={ensureCategory}
+                className="outline-personnages__sidebar-action"
+                onClick={() => {
+                  ensureCategory().then(() => selectCharacter(MODE_NEW));
+                }}
+                disabled={!personnagesCategory}
               >
-                Créer la catégorie
+                + Ajouter
               </button>
             </div>
-          ) : characters.length === 0 ? (
-            <div className="outline-personnages__sidebar-empty">
-              <p>Aucun personnage.</p>
-            </div>
-          ) : (
-            <div className="outline-personnages__list">
-              {characters.map((char) => (
+            {!personnagesCategory ? (
+              <div className="outline-personnages__sidebar-empty">
+                <p>Aucune catégorie « Personnages ».</p>
                 <button
-                  key={char._id}
                   type="button"
-                  className={`outline-personnages__list-item ${selectedId === char._id ? 'outline-personnages__list-item--active' : ''}`}
-                  onClick={() => selectCharacter(char._id)}
+                  className="outline-personnages__btn-create-cat"
+                  onClick={ensureCategory}
                 >
-                  <span className="outline-personnages__list-name">
-                    {char.title || 'Sans nom'}
-                  </span>
-                  <div className="outline-personnages__list-meta">
-                    {char.role && (
-                      <span className="outline-personnages__list-role">{char.role}</span>
-                    )}
-                    {char.importance && (
-                      <span className="outline-personnages__list-importance">
-                        {IMPORTANCE_OPTIONS.find((o) => o.value === char.importance)?.label ?? char.importance}
-                      </span>
-                    )}
-                  </div>
+                  Créer la catégorie
                 </button>
-              ))}
+              </div>
+            ) : characters.length === 0 ? (
+              <div className="outline-personnages__sidebar-empty">
+                <p>Aucun personnage.</p>
+              </div>
+            ) : (
+              <div className="outline-personnages__list">
+                {characters.map((char) => (
+                  <button
+                    key={char._id}
+                    type="button"
+                    className={`outline-personnages__list-item ${selectedId === char._id ? 'outline-personnages__list-item--active' : ''}`}
+                    onClick={() => selectCharacter(char._id)}
+                  >
+                    <span className="outline-personnages__list-name">
+                      {char.title || 'Sans nom'}
+                    </span>
+                    <div className="outline-personnages__list-meta">
+                      {char.role && (
+                        <span className="outline-personnages__list-role">{char.role}</span>
+                      )}
+                      {char.importance && (
+                        <span className="outline-personnages__list-importance">
+                          {IMPORTANCE_OPTIONS.find((o) => o.value === char.importance)?.label ?? char.importance}
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </aside>
+          {(isNew || selectedCharacter) && (
+            <div className="outline-personnages__portrait-block">
+              <div className="outline-personnages__portrait-nav">
+                <button
+                  type="button"
+                  className="outline-personnages__portrait-arrow"
+                  onClick={handlePrevImage}
+                  disabled={formImages.length <= 1}
+                  aria-label="Image précédente"
+                >
+                  <span className="outline-personnages__portrait-arrow-icon" aria-hidden>‹</span>
+                </button>
+                <div className="outline-personnages__portrait">
+                  {currentImage ? (
+                    <img src={currentImage} alt="" className="outline-personnages__portrait-img" />
+                  ) : (
+                    <div className="outline-personnages__portrait-empty">Aucune image</div>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  className="outline-personnages__portrait-arrow"
+                  onClick={handleNextImage}
+                  disabled={formImages.length <= 1}
+                  aria-label="Image suivante"
+                >
+                  <span className="outline-personnages__portrait-arrow-icon" aria-hidden>›</span>
+                </button>
+              </div>
+              <div className="outline-personnages__portrait-field">
+                <span className="outline-personnages__portrait-label">Image</span>
+                <div className="outline-personnages__portrait-add">
+                  <input
+                    type="text"
+                    className="outline-personnages__input outline-personnages__portrait-input"
+                    value={formImageInput}
+                    onChange={(e) => setFormImageInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAddImageUrl(e)}
+                    placeholder="URL de l'image (Entrée pour ajouter)"
+                  />
+                  <button
+                    type="button"
+                    className="outline-personnages__btn outline-personnages__btn--danger outline-personnages__portrait-add-btn"
+                    onClick={handleRemoveCurrentImage}
+                    disabled={!formImages.length}
+                    aria-label="Supprimer l'image affichée"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="outline-personnages__file outline-personnages__portrait-file"
+                  onChange={handleImageFile}
+                  aria-label="Choisir un fichier image"
+                />
+                {formImages.length > 1 && (
+                  <span className="outline-personnages__portrait-counter">
+                    {formImageIndex + 1} / {formImages.length}
+                  </span>
+                )}
+              </div>
             </div>
           )}
-        </aside>
+        </div>
 
         <div className="outline-personnages__main">
           {!personnagesCategory ? (
@@ -243,6 +407,36 @@ export default function OutlinePersonnages({ projectId }) {
                     value={formDescription}
                     onChange={(e) => setFormDescription(e.target.value)}
                     placeholder="Apparence, caractère, passé…"
+                  />
+                </label>
+                <label className="outline-personnages__field">
+                  <span className="outline-personnages__field-label">Biographie</span>
+                  <textarea
+                    className="outline-personnages__input outline-personnages__textarea"
+                    rows={6}
+                    value={formBiographie}
+                    onChange={(e) => setFormBiographie(e.target.value)}
+                    placeholder="Histoire du personnage, passé, origines…"
+                  />
+                </label>
+                <label className="outline-personnages__field">
+                  <span className="outline-personnages__field-label">Objectif</span>
+                  <textarea
+                    className="outline-personnages__input outline-personnages__textarea"
+                    rows={4}
+                    value={formObjectif}
+                    onChange={(e) => setFormObjectif(e.target.value)}
+                    placeholder="Ce que le personnage veut atteindre dans l'histoire…"
+                  />
+                </label>
+                <label className="outline-personnages__field">
+                  <span className="outline-personnages__field-label">Conflit</span>
+                  <textarea
+                    className="outline-personnages__input outline-personnages__textarea"
+                    rows={4}
+                    value={formConflit}
+                    onChange={(e) => setFormConflit(e.target.value)}
+                    placeholder="Obstacles, tensions, contradictions internes ou externes…"
                   />
                 </label>
                 <div className="outline-personnages__form-actions">
@@ -325,6 +519,36 @@ export default function OutlinePersonnages({ projectId }) {
                     value={formDescription}
                     onChange={(e) => setFormDescription(e.target.value)}
                     placeholder="Apparence, caractère, passé…"
+                  />
+                </label>
+                <label className="outline-personnages__field">
+                  <span className="outline-personnages__field-label">Biographie</span>
+                  <textarea
+                    className="outline-personnages__input outline-personnages__textarea"
+                    rows={6}
+                    value={formBiographie}
+                    onChange={(e) => setFormBiographie(e.target.value)}
+                    placeholder="Histoire du personnage, passé, origines…"
+                  />
+                </label>
+                <label className="outline-personnages__field">
+                  <span className="outline-personnages__field-label">Objectif</span>
+                  <textarea
+                    className="outline-personnages__input outline-personnages__textarea"
+                    rows={4}
+                    value={formObjectif}
+                    onChange={(e) => setFormObjectif(e.target.value)}
+                    placeholder="Ce que le personnage veut atteindre dans l'histoire…"
+                  />
+                </label>
+                <label className="outline-personnages__field">
+                  <span className="outline-personnages__field-label">Conflit</span>
+                  <textarea
+                    className="outline-personnages__input outline-personnages__textarea"
+                    rows={4}
+                    value={formConflit}
+                    onChange={(e) => setFormConflit(e.target.value)}
+                    placeholder="Obstacles, tensions, contradictions internes ou externes…"
                   />
                 </label>
                 <div className="outline-personnages__form-actions">

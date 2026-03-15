@@ -103,7 +103,13 @@ export function createScenePayload({ projectId, sectionId, title = 'Nouvelle sc�
   };
 }
 
-/** Créer une catégorie d'esquisse. */
+/** Champs par défaut pour les fiches d'une catégorie (vue Fiches par catégorie). */
+export const DEFAULT_OUTLINE_CATEGORY_FIELDS = [
+  { id: 'title', label: 'Titre', type: 'text' },
+  { id: 'summary', label: 'Synopsis', type: 'textarea' },
+];
+
+/** Créer une catégorie d'esquisse (avec sous-module par défaut : champs Titre + Synopsis). */
 export function createOutlineCategoryPayload({ projectId, name, order = 0 }) {
   const categoryId = id('outlineCategory');
   return {
@@ -113,6 +119,7 @@ export function createOutlineCategoryPayload({ projectId, name, order = 0 }) {
     name: name?.trim() || 'Catégorie',
     order,
     itemIds: [],
+    fields: DEFAULT_OUTLINE_CATEGORY_FIELDS.map((f) => ({ ...f })),
     createdAt: nowIso(),
     updatedAt: nowIso(),
   };

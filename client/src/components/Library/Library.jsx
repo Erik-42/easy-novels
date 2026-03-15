@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useProjects } from '../../hooks/useProjects';
 import { getDb } from '../../services/db/pouch';
-import { createProjectPayload } from '../../services/db/schema';
+import { createProjectPayload, createOutlineCategoryPayload } from '../../services/db/schema';
 import Modal from '../Modal/Modal';
+
+const DEFAULT_OUTLINE_CATEGORIES = ['Fiches', 'Personnages', 'Lieux', 'Événements'];
 import './Library.css';
 
 const DEFAULT_TITLE = 'Nouveau roman';
@@ -35,6 +37,22 @@ export default function Library() {
       const db = await getDb();
       const doc = createProjectPayload({ title });
       await db.put(doc);
+      const categoryIds = [];
+      for (let i = 0; i < DEFAULT_OUTLINE_CATEGORIES.length; i++) {
+        const categoryDoc = createOutlineCategoryPayload({
+          projectId: doc._id,
+          name: DEFAULT_OUTLINE_CATEGORIES[i],
+          order: i,
+        });
+        await db.put(categoryDoc);
+        categoryIds.push(categoryDoc._id);
+      }
+      const projectUpdated = await db.get(doc._id);
+      await db.put({
+        ...projectUpdated,
+        outlineCategoryIds: categoryIds,
+        updatedAt: new Date().toISOString(),
+      });
       refetch();
     } catch (e) {
       console.error(e);

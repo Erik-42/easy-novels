@@ -1,4 +1,6 @@
 import { Link, useParams, useLocation } from 'react-router-dom';
+import { useMemo } from 'react';
+import { useOutline } from '../../hooks/useOutline';
 
 const SECTION_NAV = [
   { path: '/', label: 'Accueil' },
@@ -6,7 +8,7 @@ const SECTION_NAV = [
 ];
 
 const BOOK_NAV = [
-  { view: 'outline', label: 'Esquisser', subItems: [{ sub: 'personnages', label: 'Personnages' }] },
+  { view: 'outline', label: 'Esquisser', dynamicSubItems: true },
   { view: 'writing', label: 'Écrire' },
   { view: 'organize', label: 'Organiser' },
   { view: 'schedule', label: 'Programmer' },
@@ -19,6 +21,23 @@ export default function Sidebar() {
   const location = useLocation();
   const isBook = Boolean(projectId);
   const searchParams = new URLSearchParams(location.search);
+  const { categories = [] } = useOutline(isBook ? projectId : null);
+
+  const outlineSubItems = useMemo(() => {
+    const fixed = [
+      { sub: 'fiches', label: 'Fiches' },
+      { sub: 'personnages', label: 'Personnages' },
+      { sub: 'lieux', label: 'Lieux' },
+      { sub: 'evenements', label: 'Événements' },
+    ];
+    const others = categories
+      .filter((c) => {
+        const name = (c.name ?? '').trim().toLowerCase();
+        return name !== 'fiches' && name !== 'personnages' && name !== 'lieux' && name !== 'événements' && name !== 'evenements';
+      })
+      .map((c) => ({ sub: c._id, label: c.name || 'Sans nom' }));
+    return [...fixed, ...others];
+  }, [categories]);
 
   const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/');
   const isBookViewActive = (view) => location.pathname === `/book/${projectId}/${view}`;
@@ -42,29 +61,32 @@ export default function Sidebar() {
             {label}
           </Link>
         ))}
-        {isBook && BOOK_NAV.map(({ view, label, subItems }) => (
-          <div key={view} className="sidebar__group">
-            <Link
-              to={`/book/${projectId}/${view}`}
-              className={`sidebar__item ${isBookViewActive(view) ? 'active' : ''}`}
-            >
-              {label}
-            </Link>
-            {subItems && isBookViewActive(view) && (
-              <div className="sidebar__sub">
-                {subItems.map(({ sub, label: subLabel }) => (
-                  <Link
-                    key={sub}
-                    to={`/book/${projectId}/${view}?sub=${sub}`}
-                    className={`sidebar__item sidebar__item--sub ${isOutlineWithSub(sub) ? 'active' : ''}`}
-                  >
-                    {subLabel}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+        {isBook && BOOK_NAV.map(({ view, label, dynamicSubItems }) => {
+          const subItems = dynamicSubItems && view === 'outline' ? outlineSubItems : null;
+          return (
+            <div key={view} className="sidebar__group">
+              <Link
+                to={`/book/${projectId}/${view}`}
+                className={`sidebar__item ${isBookViewActive(view) ? 'active' : ''}`}
+              >
+                {label}
+              </Link>
+              {subItems && isBookViewActive(view) && (
+                <div className="sidebar__sub">
+                  {subItems.map(({ sub, label: subLabel }) => (
+                    <Link
+                      key={sub}
+                      to={`/book/${projectId}/${view}?sub=${sub}`}
+                      className={`sidebar__item sidebar__item--sub ${isOutlineWithSub(sub) ? 'active' : ''}`}
+                    >
+                      {subLabel}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </nav>
   );

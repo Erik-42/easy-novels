@@ -156,6 +156,21 @@ export function useOutline(projectId) {
     [projectId, fetchOutline]
   );
 
+  const updateCategory = useCallback(
+    async (categoryId, patch) => {
+      if (!categoryId || !patch) return;
+      const db = await getDb();
+      const doc = await db.get(categoryId);
+      await db.put({
+        ...doc,
+        ...patch,
+        updatedAt: new Date().toISOString(),
+      });
+      await fetchOutline();
+    },
+    [fetchOutline]
+  );
+
   const addItem = useCallback(
     async (categoryId, title) => {
       if (!projectId || !categoryId) return;
@@ -224,6 +239,7 @@ export function useOutline(projectId) {
     addCategory,
     renameCategory,
     deleteCategory,
+    updateCategory,
     addItem,
     updateItem,
     deleteItem,

@@ -1,21 +1,29 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useOutline } from '../../hooks/useOutline';
+import { DEFAULT_OUTLINE_CATEGORY_FIELDS } from '../../services/db/schema';
 import Modal from '../Modal/Modal';
 import OutlinePersonnages from './OutlinePersonnages';
+import OutlineLieux from './OutlineLieux';
+import OutlineEvenements from './OutlineEvenements';
+import OutlineCategory from './OutlineCategory';
 import './Outline.css';
 
 const SUBMODULE_FICHES = 'fiches';
 const SUBMODULE_PERSONNAGES = 'personnages';
+const SUBMODULE_LIEUX = 'lieux';
+const SUBMODULE_EVENEMENTS = 'evenements';
+const FIXED_SUBS = [SUBMODULE_FICHES, SUBMODULE_PERSONNAGES, SUBMODULE_LIEUX, SUBMODULE_EVENEMENTS];
 
 export default function Outline({ projectId }) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const subFromUrl = searchParams.get('sub') === SUBMODULE_PERSONNAGES ? SUBMODULE_PERSONNAGES : SUBMODULE_FICHES;
+  const [searchParams] = useSearchParams();
+  const subParam = searchParams.get('sub');
+  const subFromUrl =
+    subParam === SUBMODULE_PERSONNAGES ? SUBMODULE_PERSONNAGES
+    : subParam === SUBMODULE_LIEUX ? SUBMODULE_LIEUX
+    : subParam === SUBMODULE_EVENEMENTS ? SUBMODULE_EVENEMENTS
+    : SUBMODULE_FICHES;
   const [subModule, setSubModule] = useState(subFromUrl);
-
-  useEffect(() => {
-    setSubModule(subFromUrl);
-  }, [subFromUrl]);
 
   const {
     categories,
@@ -25,21 +33,38 @@ export default function Outline({ projectId }) {
     addCategory,
     renameCategory,
     deleteCategory,
+    updateCategory,
     addItem,
     updateItem,
     deleteItem,
   } = useOutline(projectId);
 
+  const isCategorySub =
+    subParam &&
+    !FIXED_SUBS.includes(subParam) &&
+    categories.some((c) => c._id === subParam);
+
+  useEffect(() => {
+    if (FIXED_SUBS.includes(subParam)) {
+      setSubModule(subParam);
+    } else if (subParam && categories.some((c) => c._id === subParam)) {
+      setSubModule(subParam);
+    } else {
+      setSubModule(subParam === SUBMODULE_FICHES ? SUBMODULE_FICHES : subFromUrl);
+    }
+  }, [subParam, subFromUrl, categories]);
+
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const [editTitle, setEditTitle] = useState('');
-  const [editSummary, setEditSummary] = useState('');
+  const [editValues, setEditValues] = useState({});
 
   const [modalAddCategory, setModalAddCategory] = useState(false);
   const [modalRenameCategory, setModalRenameCategory] = useState(false);
   const [modalDeleteCategory, setModalDeleteCategory] = useState(false);
   const [modalAddItem, setModalAddItem] = useState(false);
   const [modalDeleteItem, setModalDeleteItem] = useState(false);
+  const [modalEditFields, setModalEditFields] = useState(false);
+  const [fieldsEdit, setFieldsEdit] = useState([]);
 
   const [promptValue, setPromptValue] = useState('');
   const saveTimeoutRef = useRef(null);
@@ -48,6 +73,10 @@ export default function Outline({ projectId }) {
   const effectiveCategoryId = selectedCategory?._id ?? selectedCategoryId;
   const items = effectiveCategoryId ? getItemsForCategory(effectiveCategoryId) : [];
   const selectedItem = items.find((i) => i._id === selectedItemId) ?? null;
+  const currentFields = useMemo(
+    () => (selectedCategory?.fields?.length ? selectedCategory.fields : DEFAULT_OUTLINE_CATEGORY_FIELDS),
+    [selectedCategory?.fields, selectedCategory?._id]
+  );
 
   useEffect(() => {
     if (categories.length && !selectedCategoryId) {
@@ -59,14 +88,17 @@ export default function Outline({ projectId }) {
     }
   }, [categories, selectedCategoryId]);
 
-  const syncEditFromItem = useCallback((item) => {
+  const syncEditFromItem = useCallback((item, fields) => {
     if (!item) {
-      setEditTitle('');
-      setEditSummary('');
+      setEditValues({});
       return;
     }
-    setEditTitle(item.title ?? '');
-    setEditSummary(item.summary ?? '');
+    const f = fields ?? DEFAULT_OUTLINE_CATEGORY_FIELDS;
+    const next = {};
+    f.forEach((field) => {
+      next[field.id] = item[field.id] ?? '';
+    });
+    setEditValues(next);
   }, []);
 
   const selectCategory = (categoryId) => {
@@ -77,25 +109,49 @@ export default function Outline({ projectId }) {
 
   const selectItem = (item) => {
     setSelectedItemId(item._id);
-    syncEditFromItem(item);
+    syncEditFromItem(item, currentFields);
   };
 
-  const handleTitleChange = (value) => {
-    setEditTitle(value);
+  useEffect(() => {
+    if (selectedItem && currentFields.length) {
+      syncEditFromItem(selectedItem, currentFields);
+    }
+  }, [selectedItemId, effectiveCategoryId, currentFields, syncEditFromItem]);
+
+  const handleFieldChange = (fieldId, value) => {
+    setEditValues((prev) => ({ ...prev, [fieldId]: value }));
     if (!selectedItemId) return;
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(() => {
-      updateItem(selectedItemId, { title: value });
+      updateItem(selectedItemId, { [fieldId]: value });
     }, 400);
   };
 
-  const handleSummaryChange = (value) => {
-    setEditSummary(value);
-    if (!selectedItemId) return;
-    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-    saveTimeoutRef.current = setTimeout(() => {
-      updateItem(selectedItemId, { summary: value });
-    }, 400);
+  const openEditFields = () => {
+    setFieldsEdit((selectedCategory?.fields ?? DEFAULT_OUTLINE_CATEGORY_FIELDS).map((f) => ({ ...f })));
+    setModalEditFields(true);
+  };
+
+  const submitEditFields = () => {
+    if (!effectiveCategoryId || !fieldsEdit.length) return;
+    updateCategory(effectiveCategoryId, { fields: fieldsEdit });
+    setModalEditFields(false);
+  };
+
+  const addFieldEdit = () => {
+    setFieldsEdit((prev) => [...prev, { id: `field_${Date.now()}`, label: 'Nouveau champ', type: 'text' }]);
+  };
+
+  const removeFieldEdit = (index) => {
+    setFieldsEdit((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateFieldEdit = (index, key, value) => {
+    setFieldsEdit((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], [key]: value };
+      return next;
+    });
   };
 
   const openAddCategory = () => {
@@ -145,8 +201,12 @@ export default function Outline({ projectId }) {
     addItem(effectiveCategoryId, title).then((newId) => {
       setModalAddItem(false);
       setSelectedItemId(newId);
-      const newItem = { _id: newId, title, summary: '' };
-      syncEditFromItem(newItem);
+      const initial = {};
+      currentFields.forEach((f) => {
+        initial[f.id] = f.id === 'title' ? title : '';
+      });
+      updateItem(newId, initial);
+      syncEditFromItem({ _id: newId, ...initial }, currentFields);
     });
   };
 
@@ -166,31 +226,14 @@ export default function Outline({ projectId }) {
 
   return (
     <section className="outline">
-      <nav className="outline__subnav" aria-label="Sous-modules Esquisser">
-        <button
-          type="button"
-          className={`outline__subnav-btn ${subModule === SUBMODULE_FICHES ? 'outline__subnav-btn--active' : ''}`}
-          onClick={() => {
-            setSubModule(SUBMODULE_FICHES);
-            setSearchParams({});
-          }}
-        >
-          Fiches par catégorie
-        </button>
-        <button
-          type="button"
-          className={`outline__subnav-btn ${subModule === SUBMODULE_PERSONNAGES ? 'outline__subnav-btn--active' : ''}`}
-          onClick={() => {
-            setSubModule(SUBMODULE_PERSONNAGES);
-            setSearchParams({ sub: SUBMODULE_PERSONNAGES });
-          }}
-        >
-          Personnages
-        </button>
-      </nav>
-
       {subModule === SUBMODULE_PERSONNAGES ? (
         <OutlinePersonnages projectId={projectId} />
+      ) : subModule === SUBMODULE_LIEUX ? (
+        <OutlineLieux projectId={projectId} />
+      ) : subModule === SUBMODULE_EVENEMENTS ? (
+        <OutlineEvenements projectId={projectId} />
+      ) : isCategorySub ? (
+        <OutlineCategory projectId={projectId} categoryId={subParam} />
       ) : (
       <div className="outline__layout">
         <aside className="outline__sidebar">
@@ -243,6 +286,14 @@ export default function Outline({ projectId }) {
               <button
                 type="button"
                 className="outline__main-button"
+                onClick={openEditFields}
+                disabled={!effectiveCategoryId}
+              >
+                Modifier les champs
+              </button>
+              <button
+                type="button"
+                className="outline__main-button"
                 onClick={openRenameCategory}
                 disabled={!effectiveCategoryId}
               >
@@ -269,9 +320,11 @@ export default function Outline({ projectId }) {
                       className={`outline__item ${i._id === selectedItemId ? 'outline__item--active' : ''}`}
                       onClick={() => selectItem(i)}
                     >
-                      <div className="outline__item-title">{i.title || 'Sans titre'}</div>
+                      <div className="outline__item-title">
+                        {currentFields[0] ? (i[currentFields[0].id] || 'Sans titre') : (i.title || 'Sans titre')}
+                      </div>
                       <div className="outline__item-subtitle">
-                        {i.summary ? i.summary : 'Sans synopsis'}
+                        {currentFields[1] ? (i[currentFields[1].id] || '') : (i.summary || 'Sans synopsis')}
                       </div>
                     </button>
                   ))
@@ -295,26 +348,28 @@ export default function Outline({ projectId }) {
                       Supprimer
                     </button>
                   </div>
-                  <label className="outline__field">
-                    <span className="outline__field-label">Titre</span>
-                    <input
-                      type="text"
-                      className="outline__field-input"
-                      value={editTitle}
-                      onChange={(e) => handleTitleChange(e.target.value)}
-                      aria-label="Titre de la fiche"
-                    />
-                  </label>
-                  <label className="outline__field">
-                    <span className="outline__field-label">Synopsis</span>
-                    <textarea
-                      className="outline__field-textarea"
-                      rows={6}
-                      value={editSummary}
-                      onChange={(e) => handleSummaryChange(e.target.value)}
-                      aria-label="Synopsis"
-                    />
-                  </label>
+                  {currentFields.map((field) => (
+                    <label key={field.id} className="outline__field">
+                      <span className="outline__field-label">{field.label}</span>
+                      {field.type === 'textarea' ? (
+                        <textarea
+                          className="outline__field-textarea"
+                          rows={6}
+                          value={editValues[field.id] ?? ''}
+                          onChange={(e) => handleFieldChange(field.id, e.target.value)}
+                          aria-label={field.label}
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          className="outline__field-input"
+                          value={editValues[field.id] ?? ''}
+                          onChange={(e) => handleFieldChange(field.id, e.target.value)}
+                          aria-label={field.label}
+                        />
+                      )}
+                    </label>
+                  ))}
                   <div className="outline__editor-hint">
                     Les changements sont sauvegardés automatiquement.
                   </div>
@@ -484,6 +539,71 @@ export default function Outline({ projectId }) {
             onClick={submitDeleteItem}
           >
             Supprimer
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={modalEditFields}
+        onClose={() => setModalEditFields(false)}
+        title="Modifier les champs de la catégorie"
+      >
+        <p className="modal__text">
+          Définissez les champs affichés pour chaque fiche de cette catégorie. Le premier champ sert de titre dans la liste.
+        </p>
+        <div className="outline__fields-edit">
+          {fieldsEdit.map((field, index) => (
+            <div key={`${field.id}-${index}`} className="outline__fields-edit-row">
+              <input
+                type="text"
+                className="modal__input outline__fields-edit-label"
+                value={field.label}
+                onChange={(e) => updateFieldEdit(index, 'label', e.target.value)}
+                placeholder="Libellé"
+                aria-label="Libellé du champ"
+              />
+              <select
+                className="outline__fields-edit-type"
+                value={field.type}
+                onChange={(e) => updateFieldEdit(index, 'type', e.target.value)}
+                aria-label="Type du champ"
+              >
+                <option value="text">Texte court</option>
+                <option value="textarea">Texte long</option>
+              </select>
+              <button
+                type="button"
+                className="modal__btn modal__btn--danger outline__fields-edit-remove"
+                onClick={() => removeFieldEdit(index)}
+                aria-label="Supprimer ce champ"
+                disabled={fieldsEdit.length <= 1}
+              >
+                ×
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            className="outline__fields-edit-add modal__btn modal__btn--secondary"
+            onClick={addFieldEdit}
+          >
+            + Ajouter un champ
+          </button>
+        </div>
+        <div className="modal__form-actions">
+          <button
+            type="button"
+            className="modal__btn modal__btn--secondary"
+            onClick={() => setModalEditFields(false)}
+          >
+            Annuler
+          </button>
+          <button
+            type="button"
+            className="modal__btn modal__btn--primary"
+            onClick={submitEditFields}
+          >
+            Enregistrer
           </button>
         </div>
       </Modal>
