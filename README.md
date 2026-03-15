@@ -44,7 +44,7 @@ cd web-novelist-app
 python -m http.server 9000
 ```
 
-3. Ouvrir dans le navigateur : **http://localhost:9000/index-web.html**
+3. Ouvrir dans le navigateur : **http://localhost:9000/** ou **http://localhost:9000/index-web.html**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

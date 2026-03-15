@@ -2,10 +2,13 @@ import {
   computeProjectWordCount,
   createProject,
   deleteProject,
+  getProject,
   listProjects,
   renameProject,
   setCurrentProject,
 } from "../../services/db.js";
+import { exportProjectAsMarkdown } from "../../services/exportMarkdown.js";
+import { importMarkdownFromFile } from "../../services/importMarkdown.js";
 import { modalConfirm, modalPrompt } from "../Modal/Modal.js";
 
 const LIBRARY_BLOCK = "library";
@@ -18,6 +21,9 @@ export function Library() {
       (project) => `
       <article class="${LIBRARY_BLOCK}__item">
         <div class="${LIBRARY_BLOCK}__item-main">
+          <span class="${LIBRARY_BLOCK}__item-tag ${LIBRARY_BLOCK}__item-tag--status-${project.status}">
+            ${project.status === "draft" ? "Brouillon" : "En cours"}
+          </span>
           <h2 class="${LIBRARY_BLOCK}__item-title">${project.title}</h2>
           <p class="${LIBRARY_BLOCK}__item-meta">
             Créé le ${new Date(project.createdAt).toLocaleDateString("fr-FR")}
@@ -27,15 +33,15 @@ export function Library() {
           </p>
         </div>
         <div class="${LIBRARY_BLOCK}__item-tags">
-          <span class="${LIBRARY_BLOCK}__item-tag ${LIBRARY_BLOCK}__item-tag--status-${project.status}">
-            ${project.status === "draft" ? "Brouillon" : "En cours"}
-          </span>
           <div class="${LIBRARY_BLOCK}__item-actions">
             <button class="${LIBRARY_BLOCK}__item-button" type="button" data-library-open="${project.id}">
               Ouvrir
             </button>
             <button class="${LIBRARY_BLOCK}__item-button" type="button" data-library-rename="${project.id}">
               Renommer
+            </button>
+            <button class="${LIBRARY_BLOCK}__item-button ${LIBRARY_BLOCK}__item-button--primary" type="button" data-library-export="${project.id}">
+              Exporter
             </button>
             <button class="${LIBRARY_BLOCK}__item-button ${LIBRARY_BLOCK}__item-button--danger" type="button" data-library-delete="${project.id}">
               Supprimer
@@ -58,6 +64,9 @@ export function Library() {
           </p>
         </div>
         <div class="${LIBRARY_BLOCK}__header-actions">
+          <button class="${LIBRARY_BLOCK}__secondary-button" type="button" data-library-action="import">
+            Importer (Markdown)
+          </button>
           <button class="${LIBRARY_BLOCK}__primary-button" type="button" data-library-action="create">
             Nouveau roman
           </button>
@@ -80,6 +89,17 @@ export function Library() {
 }
 
 export function hydrateLibraryEvents(rootElement) {
+  const importButton = rootElement.querySelector('[data-library-action="import"]');
+  if (importButton) {
+    importButton.addEventListener("click", async () => {
+      const project = await importMarkdownFromFile();
+      if (project) {
+        window.dispatchEvent(new CustomEvent("app:changed"));
+        window.location.hash = `#book/${project.id}/outline`;
+      }
+    });
+  }
+
   const createButton = rootElement.querySelector(
     '[data-library-action="create"]'
   );
@@ -106,6 +126,14 @@ export function hydrateLibraryEvents(rootElement) {
       setCurrentProject(id);
       window.location.hash = `#book/${id}/outline`;
       window.dispatchEvent(new CustomEvent("app:changed"));
+    });
+  });
+
+  rootElement.querySelectorAll("[data-library-export]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const id = button.getAttribute("data-library-export");
+      const project = getProject(id);
+      if (project) exportProjectAsMarkdown(project);
     });
   });
 
