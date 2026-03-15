@@ -64,6 +64,10 @@ function migrateFromLegacyIfNeeded() {
         notes: {},
         selectedNoteId: null,
       },
+      documents: {
+        documentOrder: [],
+        documents: {},
+      },
     };
   });
   const firstId = legacyList[0]?.id ?? null;
@@ -129,6 +133,10 @@ export function createProject({ title }) {
         noteOrder: [],
         notes: {},
         selectedNoteId: null,
+      },
+      documents: {
+        documentOrder: [],
+        documents: {},
       },
     };
     db.currentProjectId = id;

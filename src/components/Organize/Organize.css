@@ -114,6 +114,16 @@
   color: #fecaca;
 }
 
+@media (max-width: 640px) {
+  .organize__header {
+    flex-direction: column;
+  }
+
+  .organize__sections {
+    grid-template-columns: 1fr;
+  }
+}
+
 .organize__section-subtitle {
   font-size: 0.75rem;
   text-transform: uppercase;

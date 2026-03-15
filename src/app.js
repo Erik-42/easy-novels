@@ -8,6 +8,7 @@ import { exportProjectAsMarkdown } from "./services/exportMarkdown.js";
 import { importMarkdownFromFile } from "./services/importMarkdown.js";
 import { Home, hydrateHomeEvents } from "./components/Home/Home.js";
 import { Notes, hydrateNotesEvents } from "./components/Notes/Notes.js";
+import { Documents, hydrateDocumentsEvents } from "./components/Documents/Documents.js";
 import { modalAlert } from "./components/Modal/Modal.js";
 
 const BOOK_VIEWS = [
@@ -16,6 +17,7 @@ const BOOK_VIEWS = [
   { id: "organize", label: "Organiser", description: "Actes, parties, chapitres" },
   { id: "schedule", label: "Programmer", description: "Objectifs et progression" },
   { id: "notes", label: "Notes", description: "Notes et idées" },
+  { id: "documents", label: "Documents", description: "Sources et références" },
 ];
 
 /** Liste unifiée pour les boutons de la section (Bibliothèque + vues livre). */
@@ -57,6 +59,8 @@ function renderView(route, project) {
       return Schedule(project);
     case "notes":
       return Notes(project);
+    case "documents":
+      return Documents(project);
     default:
       return Outline(project);
   }
@@ -237,6 +241,7 @@ function render() {
   hydrateWritingEvents(root);
   hydrateOrganizeEvents(root);
   hydrateScheduleEvents(root);
+  hydrateDocumentsEvents(root);
 }
 
 window.addEventListener("hashchange", () => {
