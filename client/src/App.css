@@ -1,0 +1,128 @@
+#root {
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.library__loading,
+.library__error {
+  padding: 1rem;
+  color: #9ca3af;
+}
+
+.library__error {
+  color: #f87171;
+}
+
+.library__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.library__headline {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.library__btn {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: transparent;
+  color: #e5e7eb;
+}
+
+.library__btn--primary {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  border-color: transparent;
+  color: #fff;
+}
+
+.library__btn:hover {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.library__btn--primary:hover {
+  filter: brightness(1.1);
+}
+
+.library__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.library__empty {
+  grid-column: 1 / -1;
+  padding: 2rem;
+  color: #9ca3af;
+}
+
+.library__card {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.library__card-title {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.library__card-meta {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin: 0 0 0.75rem;
+}
+
+.library__card-link {
+  font-size: 0.85rem;
+  color: #818cf8;
+  text-decoration: none;
+}
+
+.library__card-link:hover {
+  text-decoration: underline;
+}
+
+.home {
+  max-width: 32rem;
+  margin: 0 auto;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.home__title {
+  font-size: 1.75rem;
+  margin: 0 0 0.5rem;
+}
+
+.home__tagline {
+  color: #a5b4fc;
+  margin: 0 0 1rem;
+}
+
+.home__desc {
+  color: #9ca3af;
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+}
+
+.home__cta {
+  display: inline-block;
+  padding: 0.6rem 1.25rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.home__cta:hover {
+  filter: brightness(1.1);
+}

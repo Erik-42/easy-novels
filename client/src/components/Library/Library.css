@@ -1,0 +1,35 @@
+.library__card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.library__card-link {
+  margin-right: auto;
+}
+
+.library__card-btn {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: #94a3b8;
+  transition: background 0.15s, color 0.15s;
+}
+
+.library__card-btn:hover {
+  color: #e4e7ec;
+}
+
+.library__card-btn--danger {
+  color: #f87171;
+}
+
+.library__card-btn--danger:hover {
+  background: rgba(248, 113, 113, 0.15);
+  color: #fca5a5;
+}

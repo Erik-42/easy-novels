@@ -1,0 +1,101 @@
+.book-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.book-view__header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.book-view__header .book-view__status {
+  justify-self: start;
+}
+
+.book-view__title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #e4e7ec;
+  text-align: center;
+  grid-column: 2;
+}
+
+.book-view__edit-title {
+  justify-self: end;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8125rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(30, 41, 59, 0.6);
+  color: #e4e7ec;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.book-view__edit-title:hover {
+  background: rgba(51, 65, 85, 0.7);
+  border-color: rgba(148, 163, 184, 0.5);
+}
+
+.book-view__status {
+  font-size: 0.8125rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(30, 41, 59, 0.6);
+  color: #94a3b8;
+}
+
+.book-view__status--todo {
+  border-color: rgba(148, 163, 184, 0.5);
+  color: #94a3b8;
+}
+
+.book-view__status--first_draft {
+  border-color: rgba(251, 191, 36, 0.5);
+  color: #fcd34d;
+}
+
+.book-view__status--revised {
+  border-color: rgba(96, 165, 250, 0.5);
+  color: #93c5fd;
+}
+
+.book-view__status--done {
+  border-color: rgba(74, 222, 128, 0.5);
+  color: #86efac;
+}
+
+.book-view__status--proofread {
+  border-color: rgba(167, 139, 250, 0.5);
+  color: #c4b5fd;
+}
+
+.book-view__status--approved_review {
+  border-color: rgba(248, 113, 113, 0.5);
+  color: #fca5a5;
+}
+
+.book-view__body {
+  flex: 1;
+  min-height: 0;
+}
+
+.book-view__view-label {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  margin: 0 0 1rem;
+}
+
+.book-view__placeholder {
+  padding: 1.5rem;
+  border: 1px dashed rgba(148, 163, 184, 0.5);
+  border-radius: 0.75rem;
+  color: #94a3b8;
+}

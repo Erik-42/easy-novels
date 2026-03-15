@@ -1,0 +1,29 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #050816;
+  color: #e4e7ec;
+}
+
+.layout__menubar {
+  flex-shrink: 0;
+}
+
+.layout__content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.layout__sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.layout__main {
+  flex: 1;
+  min-width: 0;
+  padding: 1.5rem;
+}
