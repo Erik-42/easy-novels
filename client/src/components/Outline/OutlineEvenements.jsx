@@ -6,7 +6,7 @@ import './OutlineEvenements.css';
 const CATEGORY_NAME = 'Événements';
 const MODE_NEW = 'new';
 
-const TYPE_OPTIONS = [
+const DEFAULT_TYPE_OPTIONS = [
   { value: '', label: '— Choisir —' },
   { value: 'bataille', label: 'Bataille' },
   { value: 'mariage', label: 'Mariage' },
@@ -47,18 +47,24 @@ export default function OutlineEvenements({ projectId }) {
   const personnagesCategory = categories.find(
     (c) => c.name && c.name.trim().toLowerCase() === 'personnages'
   );
+  const lieuxCategory = categories.find(
+    (c) => c.name && c.name.trim().toLowerCase() === 'lieux'
+  );
   const events = evenementsCategory
     ? getItemsForCategory(evenementsCategory._id)
     : [];
   const personnages = personnagesCategory
     ? getItemsForCategory(personnagesCategory._id)
     : [];
+  const lieux = lieuxCategory
+    ? getItemsForCategory(lieuxCategory._id)
+    : [];
 
   const [selectedId, setSelectedId] = useState(null);
   const [formName, setFormName] = useState('');
   const [formType, setFormType] = useState('');
   const [formDate, setFormDate] = useState('');
-  const [formLieu, setFormLieu] = useState('');
+  const [formLieuIds, setFormLieuIds] = useState([]);
   const [formImportance, setFormImportance] = useState('');
   const [formDescription, setFormDescription] = useState('');
   const [formContexte, setFormContexte] = useState('');
@@ -69,8 +75,12 @@ export default function OutlineEvenements({ projectId }) {
   const [modalDelete, setModalDelete] = useState(false);
   const [modalEditImportance, setModalEditImportance] = useState(false);
   const [importanceOptionsEdit, setImportanceOptionsEdit] = useState([]);
+  const [modalEditType, setModalEditType] = useState(false);
+  const [typeOptionsEdit, setTypeOptionsEdit] = useState([]);
   const deleteTargetRef = useRef(null);
+  const saveDebounceRef = useRef(null);
 
+  const typeOptions = evenementsCategory?.typeOptions ?? DEFAULT_TYPE_OPTIONS;
   const importanceOptions = evenementsCategory?.importanceOptions ?? DEFAULT_IMPORTANCE_OPTIONS;
 
   const isNew = selectedId === MODE_NEW;
@@ -87,7 +97,7 @@ export default function OutlineEvenements({ projectId }) {
       setFormName('');
       setFormType('');
       setFormDate('');
-      setFormLieu('');
+      setFormLieuIds([]);
       setFormImportance('');
       setFormDescription('');
       setFormContexte('');
@@ -99,7 +109,7 @@ export default function OutlineEvenements({ projectId }) {
       setFormName(selectedEvent.title ?? '');
       setFormType(selectedEvent.type ?? '');
       setFormDate(selectedEvent.date ?? '');
-      setFormLieu(selectedEvent.lieu ?? '');
+      setFormLieuIds(Array.isArray(selectedEvent.lieuIds) ? selectedEvent.lieuIds : []);
       setFormImportance(selectedEvent.importance ?? '');
       setFormDescription(selectedEvent.summary ?? '');
       setFormContexte(selectedEvent.contexte ?? '');
@@ -115,6 +125,40 @@ export default function OutlineEvenements({ projectId }) {
     }
   }, [selectedId, selectedEvent?._id, isNew]);
 
+  useEffect(() => {
+    if (!selectedEvent) return;
+    if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current);
+    saveDebounceRef.current = setTimeout(() => {
+      saveDebounceRef.current = null;
+      updateItem(selectedEvent._id, {
+        title: formName.trim() || 'Sans nom',
+        type: formType || undefined,
+        date: formDate.trim() || undefined,
+        lieuIds: formLieuIds.filter(Boolean),
+        importance: formImportance || undefined,
+        summary: formDescription.trim() || undefined,
+        contexte: formContexte.trim() || undefined,
+        personnageIds: formPersonnageIds.filter(Boolean),
+        images: formImages.filter((u) => u && String(u).trim()),
+        image: formImages[0]?.trim() || undefined,
+      });
+    }, 400);
+    return () => {
+      if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current);
+    };
+  }, [
+    selectedEvent?._id,
+    formName,
+    formType,
+    formDate,
+    formLieuIds,
+    formImportance,
+    formDescription,
+    formContexte,
+    formPersonnageIds,
+    formImages,
+  ]);
+
   const saveEventImages = async (nextImages) => {
     if (!selectedEvent) return;
     const filtered = (nextImages ?? []).filter((u) => u && String(u).trim());
@@ -122,7 +166,7 @@ export default function OutlineEvenements({ projectId }) {
       title: formName.trim() || 'Sans nom',
       type: formType || undefined,
       date: formDate.trim() || undefined,
-      lieu: formLieu.trim() || undefined,
+      lieuIds: formLieuIds.filter(Boolean),
       importance: formImportance || undefined,
       summary: formDescription.trim() || undefined,
       contexte: formContexte.trim() || undefined,
@@ -179,6 +223,22 @@ export default function OutlineEvenements({ projectId }) {
     setSelectedId(id);
   };
 
+  const togglePersonnage = (personnageId) => {
+    setFormPersonnageIds((prev) =>
+      prev.includes(personnageId)
+        ? prev.filter((id) => id !== personnageId)
+        : [...prev, personnageId]
+    );
+  };
+
+  const toggleLieu = (lieuId) => {
+    setFormLieuIds((prev) =>
+      prev.includes(lieuId)
+        ? prev.filter((id) => id !== lieuId)
+        : [...prev, lieuId]
+    );
+  };
+
   const ensureCategory = async () => {
     if (evenementsCategory) return evenementsCategory._id;
     const newId = await addCategory(CATEGORY_NAME);
@@ -197,7 +257,7 @@ export default function OutlineEvenements({ projectId }) {
         summary: formDescription.trim(),
         type: formType || undefined,
         date: formDate.trim() || undefined,
-        lieu: formLieu.trim() || undefined,
+        lieuIds: formLieuIds.filter(Boolean),
         importance: formImportance || undefined,
         contexte: formContexte.trim() || undefined,
         personnageIds: formPersonnageIds.filter(Boolean),
@@ -206,23 +266,6 @@ export default function OutlineEvenements({ projectId }) {
       });
       setSelectedId(itemId);
     }
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-    if (!selectedEvent) return;
-    await updateItem(selectedEvent._id, {
-      title: formName.trim() || 'Sans nom',
-      type: formType || undefined,
-      date: formDate.trim() || undefined,
-      lieu: formLieu.trim() || undefined,
-      importance: formImportance || undefined,
-      summary: formDescription.trim(),
-      contexte: formContexte.trim() || undefined,
-      personnageIds: formPersonnageIds.filter(Boolean),
-      images: formImages.filter((u) => u && String(u).trim()),
-      image: formImages[0]?.trim() || undefined,
-    });
   };
 
   const openEditImportanceList = () => {
@@ -246,6 +289,33 @@ export default function OutlineEvenements({ projectId }) {
 
   const updateImportanceOption = (index, key, val) => {
     setImportanceOptionsEdit((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], [key]: val };
+      return next;
+    });
+  };
+
+  const openEditTypeList = () => {
+    setTypeOptionsEdit((evenementsCategory?.typeOptions ?? DEFAULT_TYPE_OPTIONS).map((o) => ({ ...o })));
+    setModalEditType(true);
+  };
+
+  const submitEditTypeList = () => {
+    if (!evenementsCategory || !typeOptionsEdit.length) return;
+    updateCategory(evenementsCategory._id, { typeOptions: typeOptionsEdit });
+    setModalEditType(false);
+  };
+
+  const addTypeOption = () => {
+    setTypeOptionsEdit((prev) => [...prev, { value: `option_${Date.now()}`, label: 'Nouvelle option' }]);
+  };
+
+  const removeTypeOption = (index) => {
+    setTypeOptionsEdit((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateTypeOption = (index, key, val) => {
+    setTypeOptionsEdit((prev) => {
       const next = [...prev];
       next[index] = { ...next[index], [key]: val };
       return next;
@@ -317,7 +387,7 @@ export default function OutlineEvenements({ projectId }) {
                     <div className="outline-evenements__list-meta">
                       {event.type && (
                         <span className="outline-evenements__list-type">
-                          {TYPE_OPTIONS.find((o) => o.value === event.type)?.label ?? event.type}
+                          {typeOptions.find((o) => o.value === event.type)?.label ?? event.type}
                         </span>
                       )}
                       {event.date && (
@@ -421,15 +491,28 @@ export default function OutlineEvenements({ projectId }) {
                   />
                 </label>
                 <label className="outline-evenements__field">
-                  <span className="outline-evenements__field-label">Type</span>
+                  <span className="outline-evenements__field-label">
+                    Type
+                    {evenementsCategory && (
+                      <button
+                        type="button"
+                        className="outline-evenements__field-edit-list"
+                        onClick={openEditTypeList}
+                        aria-label="Modifier la liste des options"
+                      >
+                        Modifier la liste
+                      </button>
+                    )}
+                  </span>
                   <select
                     className="outline-evenements__select"
                     value={formType}
                     onChange={(e) => setFormType(e.target.value)}
                     aria-label="Type d'événement"
                   >
-                    {TYPE_OPTIONS.map((opt) => (
-                      <option key={opt.value || 'empty'} value={opt.value}>
+                    <option value="">— Choisir —</option>
+                    {typeOptions.filter((o) => o.value).map((opt) => (
+                      <option key={opt.value} value={opt.value}>
                         {opt.label}
                       </option>
                     ))}
@@ -445,16 +528,27 @@ export default function OutlineEvenements({ projectId }) {
                     placeholder="Ex. 15 mars 1429, printemps 1920…"
                   />
                 </label>
-                <label className="outline-evenements__field">
-                  <span className="outline-evenements__field-label">Lieu</span>
-                  <input
-                    type="text"
-                    className="outline-evenements__input"
-                    value={formLieu}
-                    onChange={(e) => setFormLieu(e.target.value)}
-                    placeholder="Lieu de l'événement"
-                  />
-                </label>
+                <div className="outline-evenements__field">
+                  <span className="outline-evenements__field-label">Lieux</span>
+                  {lieux.length === 0 ? (
+                    <p className="outline-evenements__lieux-empty">Aucun lieu dans le projet.</p>
+                  ) : (
+                    <div className="outline-evenements__lieux-list" role="group" aria-label="Lieux">
+                      {lieux.map((lieu) => (
+                        <label key={lieu._id} className="outline-evenements__lieux-item">
+                          <input
+                            type="checkbox"
+                            checked={formLieuIds.includes(lieu._id)}
+                            onChange={() => toggleLieu(lieu._id)}
+                            className="outline-evenements__lieux-checkbox"
+                            aria-label={lieu.title || lieu.name || 'Sans nom'}
+                          />
+                          <span className="outline-evenements__lieux-item-name">{lieu.title || lieu.name || 'Sans nom'}</span>
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <label className="outline-evenements__field">
                   <span className="outline-evenements__field-label">
                     Importance
@@ -488,20 +582,20 @@ export default function OutlineEvenements({ projectId }) {
                   {personnages.length === 0 ? (
                     <p className="outline-evenements__personnages-empty">Aucun personnage dans le projet.</p>
                   ) : (
-                    <select
-                      multiple
-                      size={5}
-                      value={formPersonnageIds}
-                      onChange={(e) => setFormPersonnageIds(Array.from(e.target.selectedOptions, (o) => o.value))}
-                      className="outline-evenements__personnages-select"
-                      aria-label="Personnages impliqués (Ctrl+Clic pour plusieurs)"
-                    >
+                    <div className="outline-evenements__personnages-list" role="group" aria-label="Personnages impliqués">
                       {personnages.map((p) => (
-                        <option key={p._id} value={p._id}>
-                          {p.title || p.name || 'Sans nom'}
-                        </option>
+                        <label key={p._id} className="outline-evenements__personnages-item">
+                          <input
+                            type="checkbox"
+                            checked={formPersonnageIds.includes(p._id)}
+                            onChange={() => togglePersonnage(p._id)}
+                            className="outline-evenements__personnages-checkbox"
+                            aria-label={p.title || p.name || 'Sans nom'}
+                          />
+                          <span className="outline-evenements__personnages-item-name">{p.title || p.name || 'Sans nom'}</span>
+                        </label>
                       ))}
-                    </select>
+                    </div>
                   )}
                 </div>
                 <label className="outline-evenements__field">
@@ -550,7 +644,7 @@ export default function OutlineEvenements({ projectId }) {
                   Supprimer
                 </button>
               </div>
-              <form className="outline-evenements__form" onSubmit={handleSave} noValidate>
+              <form className="outline-evenements__form" onSubmit={(e) => e.preventDefault()} noValidate>
                 <label className="outline-evenements__field">
                   <span className="outline-evenements__field-label">Nom</span>
                   <input
@@ -562,15 +656,28 @@ export default function OutlineEvenements({ projectId }) {
                   />
                 </label>
                 <label className="outline-evenements__field">
-                  <span className="outline-evenements__field-label">Type</span>
+                  <span className="outline-evenements__field-label">
+                    Type
+                    {evenementsCategory && (
+                      <button
+                        type="button"
+                        className="outline-evenements__field-edit-list"
+                        onClick={openEditTypeList}
+                        aria-label="Modifier la liste des options"
+                      >
+                        Modifier la liste
+                      </button>
+                    )}
+                  </span>
                   <select
                     className="outline-evenements__select"
                     value={formType}
                     onChange={(e) => setFormType(e.target.value)}
                     aria-label="Type d'événement"
                   >
-                    {TYPE_OPTIONS.map((opt) => (
-                      <option key={opt.value || 'empty'} value={opt.value}>
+                    <option value="">— Choisir —</option>
+                    {typeOptions.filter((o) => o.value).map((opt) => (
+                      <option key={opt.value} value={opt.value}>
                         {opt.label}
                       </option>
                     ))}
@@ -586,16 +693,27 @@ export default function OutlineEvenements({ projectId }) {
                     placeholder="Ex. 15 mars 1429, printemps 1920…"
                   />
                 </label>
-                <label className="outline-evenements__field">
-                  <span className="outline-evenements__field-label">Lieu</span>
-                  <input
-                    type="text"
-                    className="outline-evenements__input"
-                    value={formLieu}
-                    onChange={(e) => setFormLieu(e.target.value)}
-                    placeholder="Lieu de l'événement"
-                  />
-                </label>
+                <div className="outline-evenements__field">
+                  <span className="outline-evenements__field-label">Lieux</span>
+                  {lieux.length === 0 ? (
+                    <p className="outline-evenements__lieux-empty">Aucun lieu dans le projet.</p>
+                  ) : (
+                    <div className="outline-evenements__lieux-list" role="group" aria-label="Lieux">
+                      {lieux.map((lieu) => (
+                        <label key={lieu._id} className="outline-evenements__lieux-item">
+                          <input
+                            type="checkbox"
+                            checked={formLieuIds.includes(lieu._id)}
+                            onChange={() => toggleLieu(lieu._id)}
+                            className="outline-evenements__lieux-checkbox"
+                            aria-label={lieu.title || lieu.name || 'Sans nom'}
+                          />
+                          <span className="outline-evenements__lieux-item-name">{lieu.title || lieu.name || 'Sans nom'}</span>
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <label className="outline-evenements__field">
                   <span className="outline-evenements__field-label">
                     Importance
@@ -629,20 +747,20 @@ export default function OutlineEvenements({ projectId }) {
                   {personnages.length === 0 ? (
                     <p className="outline-evenements__personnages-empty">Aucun personnage dans le projet.</p>
                   ) : (
-                    <select
-                      multiple
-                      size={5}
-                      value={formPersonnageIds}
-                      onChange={(e) => setFormPersonnageIds(Array.from(e.target.selectedOptions, (o) => o.value))}
-                      className="outline-evenements__personnages-select"
-                      aria-label="Personnages impliqués (Ctrl+Clic pour plusieurs)"
-                    >
+                    <div className="outline-evenements__personnages-list" role="group" aria-label="Personnages impliqués">
                       {personnages.map((p) => (
-                        <option key={p._id} value={p._id}>
-                          {p.title || p.name || 'Sans nom'}
-                        </option>
+                        <label key={p._id} className="outline-evenements__personnages-item">
+                          <input
+                            type="checkbox"
+                            checked={formPersonnageIds.includes(p._id)}
+                            onChange={() => togglePersonnage(p._id)}
+                            className="outline-evenements__personnages-checkbox"
+                            aria-label={p.title || p.name || 'Sans nom'}
+                          />
+                          <span className="outline-evenements__personnages-item-name">{p.title || p.name || 'Sans nom'}</span>
+                        </label>
                       ))}
-                    </select>
+                    </div>
                   )}
                 </div>
                 <label className="outline-evenements__field">
@@ -665,11 +783,7 @@ export default function OutlineEvenements({ projectId }) {
                     placeholder="Rôle dans l'histoire, liens avec les personnages…"
                   />
                 </label>
-                <div className="outline-evenements__form-actions">
-                  <button type="submit" className="outline-evenements__btn outline-evenements__btn--primary">
-                    Enregistrer
-                  </button>
-                </div>
+                <p className="outline-evenements__hint">Les changements sont sauvegardés automatiquement.</p>
               </form>
             </div>
           ) : (
@@ -739,6 +853,54 @@ export default function OutlineEvenements({ projectId }) {
             Annuler
           </button>
           <button type="button" className="modal__btn modal__btn--primary" onClick={submitEditImportanceList}>
+            Enregistrer
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={modalEditType}
+        onClose={() => setModalEditType(false)}
+        title="Modifier la liste Type"
+      >
+        <p className="modal__text">
+          Ajoutez, supprimez ou renommez les options de la liste « Type » pour les fiches événements.
+        </p>
+        <div className="outline-evenements__type-edit">
+          {typeOptionsEdit.map((opt, index) => (
+            <div key={`${opt.value}-${index}`} className="outline-evenements__type-edit-row">
+              <input
+                type="text"
+                className="modal__input outline-evenements__type-edit-label"
+                value={opt.label}
+                onChange={(e) => updateTypeOption(index, 'label', e.target.value)}
+                placeholder="Libellé"
+                aria-label="Libellé de l'option"
+              />
+              <button
+                type="button"
+                className="modal__btn modal__btn--danger outline-evenements__type-edit-remove"
+                onClick={() => removeTypeOption(index)}
+                aria-label="Supprimer cette option"
+                disabled={typeOptionsEdit.length <= 1}
+              >
+                ×
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            className="outline-evenements__type-edit-add modal__btn modal__btn--secondary"
+            onClick={addTypeOption}
+          >
+            + Ajouter une option
+          </button>
+        </div>
+        <div className="modal__form-actions">
+          <button type="button" className="modal__btn modal__btn--secondary" onClick={() => setModalEditType(false)}>
+            Annuler
+          </button>
+          <button type="button" className="modal__btn modal__btn--primary" onClick={submitEditTypeList}>
             Enregistrer
           </button>
         </div>

@@ -57,6 +57,7 @@ export default function OutlineLieux({ projectId }) {
   const [modalEditImportance, setModalEditImportance] = useState(false);
   const [importanceOptionsEdit, setImportanceOptionsEdit] = useState([]);
   const deleteTargetRef = useRef(null);
+  const saveDebounceRef = useRef(null);
 
   const importanceOptions = lieuxCategory?.importanceOptions ?? DEFAULT_IMPORTANCE_OPTIONS;
 
@@ -95,6 +96,34 @@ export default function OutlineLieux({ projectId }) {
       setFormImageInput('');
     }
   }, [selectedId, selectedLieu?._id, isNew]);
+
+  useEffect(() => {
+    if (!selectedLieu) return;
+    if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current);
+    saveDebounceRef.current = setTimeout(() => {
+      saveDebounceRef.current = null;
+      updateItem(selectedLieu._id, {
+        title: formName.trim() || 'Sans nom',
+        type: formType || undefined,
+        importance: formImportance || undefined,
+        summary: formDescription.trim() || undefined,
+        contexte: formContexte.trim() || undefined,
+        images: formImages.filter((u) => u && String(u).trim()),
+        image: formImages[0]?.trim() || undefined,
+      });
+    }, 400);
+    return () => {
+      if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current);
+    };
+  }, [
+    selectedLieu?._id,
+    formName,
+    formType,
+    formImportance,
+    formDescription,
+    formContexte,
+    formImages,
+  ]);
 
   const saveLieuImages = async (nextImages) => {
     if (!selectedLieu) return;
@@ -181,20 +210,6 @@ export default function OutlineLieux({ projectId }) {
       });
       setSelectedId(itemId);
     }
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-    if (!selectedLieu) return;
-    await updateItem(selectedLieu._id, {
-      title: formName.trim() || 'Sans nom',
-      type: formType || undefined,
-      importance: formImportance || undefined,
-      summary: formDescription.trim(),
-      contexte: formContexte.trim() || undefined,
-      images: formImages.filter((u) => u && String(u).trim()),
-      image: formImages[0]?.trim() || undefined,
-    });
   };
 
   const openEditImportanceList = () => {
@@ -478,7 +493,7 @@ export default function OutlineLieux({ projectId }) {
                   Supprimer
                 </button>
               </div>
-              <form className="outline-lieux__form" onSubmit={handleSave} noValidate>
+              <form className="outline-lieux__form" onSubmit={(e) => e.preventDefault()} noValidate>
                 <label className="outline-lieux__field">
                   <span className="outline-lieux__field-label">Nom</span>
                   <input
@@ -552,11 +567,7 @@ export default function OutlineLieux({ projectId }) {
                     placeholder="Rôle dans l'histoire…"
                   />
                 </label>
-                <div className="outline-lieux__form-actions">
-                  <button type="submit" className="outline-lieux__btn outline-lieux__btn--primary">
-                    Enregistrer
-                  </button>
-                </div>
+                <p className="outline-lieux__hint">Les changements sont sauvegardés automatiquement.</p>
               </form>
             </div>
           ) : (

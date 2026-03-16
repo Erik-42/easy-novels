@@ -406,6 +406,12 @@
   margin-top: 0.5rem;
 }
 
+.outline-personnages__hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  color: #94a3b8;
+}
+
 .outline-personnages__btn {
   padding: 0.45rem 0.9rem;
   font-size: 0.875rem;

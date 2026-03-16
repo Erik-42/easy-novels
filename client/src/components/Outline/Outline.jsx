@@ -15,6 +15,15 @@ const SUBMODULE_LIEUX = 'lieux';
 const SUBMODULE_EVENEMENTS = 'evenements';
 const FIXED_SUBS = [SUBMODULE_FICHES, SUBMODULE_PERSONNAGES, SUBMODULE_LIEUX, SUBMODULE_EVENEMENTS];
 
+/** Catégories réservées (sous-modules Personnages, Lieux, Événements) : non supprimables. */
+const PROTECTED_CATEGORY_NAMES = ['personnages', 'lieux', 'evenements', 'événements'];
+
+function isProtectedCategory(category) {
+  if (!category?.name) return false;
+  const norm = category.name.trim().toLowerCase();
+  return PROTECTED_CATEGORY_NAMES.includes(norm);
+}
+
 export default function Outline({ projectId }) {
   const [searchParams] = useSearchParams();
   const subParam = searchParams.get('sub');
@@ -183,7 +192,7 @@ export default function Outline({ projectId }) {
   const openDeleteCategory = () => setModalDeleteCategory(true);
 
   const submitDeleteCategory = () => {
-    if (effectiveCategoryId) {
+    if (effectiveCategoryId && !isProtectedCategory(selectedCategory)) {
       deleteCategory(effectiveCategoryId);
       setModalDeleteCategory(false);
       setSelectedCategoryId(categories[0]?._id ?? null);
@@ -303,7 +312,8 @@ export default function Outline({ projectId }) {
                 type="button"
                 className="outline__main-button outline__main-button--danger"
                 onClick={openDeleteCategory}
-                disabled={!effectiveCategoryId}
+                disabled={!effectiveCategoryId || isProtectedCategory(selectedCategory)}
+                title={isProtectedCategory(selectedCategory) ? 'Cette catégorie ne peut pas être supprimée' : undefined}
               >
                 Supprimer
               </button>

@@ -48,6 +48,7 @@ export default function OutlinePersonnages({ projectId }) {
   const [formImageInput, setFormImageInput] = useState('');
   const [modalDelete, setModalDelete] = useState(false);
   const deleteTargetRef = useRef(null);
+  const saveDebounceRef = useRef(null);
 
   const isNew = selectedId === MODE_NEW;
   const selectedCharacter = selectedId && selectedId !== MODE_NEW
@@ -90,6 +91,40 @@ export default function OutlinePersonnages({ projectId }) {
       setFormImageInput('');
     }
   }, [selectedId, selectedCharacter?._id, isNew]);
+
+  useEffect(() => {
+    if (!selectedCharacter) return;
+    if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current);
+    saveDebounceRef.current = setTimeout(() => {
+      const filtered = formImages.filter((u) => u && String(u).trim());
+      updateItem(selectedCharacter._id, {
+        title: formName.trim() || 'Sans nom',
+        role: formRole.trim(),
+        importance: formImportance || undefined,
+        motivation: formMotivation.trim() || undefined,
+        summary: formDescription.trim() || undefined,
+        biographie: formBiographie.trim() || undefined,
+        objectif: formObjectif.trim() || undefined,
+        conflit: formConflit.trim() || undefined,
+        images: filtered,
+        image: filtered[0]?.trim() || undefined,
+      });
+    }, 400);
+    return () => {
+      if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current);
+    };
+  }, [
+    selectedCharacter?._id,
+    formName,
+    formRole,
+    formImportance,
+    formDescription,
+    formBiographie,
+    formObjectif,
+    formMotivation,
+    formConflit,
+    formImages,
+  ]);
 
   const saveCharacterImages = async (nextImages) => {
     if (!selectedCharacter) return;
@@ -182,23 +217,6 @@ export default function OutlinePersonnages({ projectId }) {
       });
       setSelectedId(itemId);
     }
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-    if (!selectedCharacter) return;
-    await updateItem(selectedCharacter._id, {
-      title: formName.trim() || 'Sans nom',
-      role: formRole.trim(),
-      importance: formImportance || undefined,
-      motivation: formMotivation.trim() || undefined,
-      summary: formDescription.trim(),
-      biographie: formBiographie.trim() || undefined,
-      objectif: formObjectif.trim() || undefined,
-      conflit: formConflit.trim() || undefined,
-      images: formImages.filter((u) => u && String(u).trim()),
-      image: formImages[0]?.trim() || undefined,
-    });
   };
 
   const openDelete = (char) => {
@@ -465,7 +483,7 @@ export default function OutlinePersonnages({ projectId }) {
                   Supprimer
                 </button>
               </div>
-              <form className="outline-personnages__form" onSubmit={handleSave} noValidate>
+              <form className="outline-personnages__form" onSubmit={(e) => e.preventDefault()} noValidate>
                 <label className="outline-personnages__field">
                   <span className="outline-personnages__field-label">Nom</span>
                   <input
@@ -551,11 +569,7 @@ export default function OutlinePersonnages({ projectId }) {
                     placeholder="Obstacles, tensions, contradictions internes ou externes…"
                   />
                 </label>
-                <div className="outline-personnages__form-actions">
-                  <button type="submit" className="outline-personnages__btn outline-personnages__btn--primary">
-                    Enregistrer
-                  </button>
-                </div>
+                <p className="outline-personnages__hint">Les changements sont sauvegardés automatiquement.</p>
               </form>
             </div>
           ) : (
