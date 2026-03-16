@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, useSearchParams, Navigate } from 'react-router-dom';
 import { useCurrentProject } from '../../contexts/CurrentProject';
 import { getDb } from '../../services/db/pouch';
 import { PROJECT_STATUS_LABELS } from '../../services/db/schema';
@@ -9,7 +9,7 @@ import './BookView.css';
 
 const VIEWS = ['outline', 'writing', 'organize', 'schedule', 'notes', 'documents'];
 
-function BookViewHeader({ title, status, onEditTitle }) {
+function BookViewHeader({ title, status, onEditTitle, showEditTitle }) {
   const label = PROJECT_STATUS_LABELS[status] ?? 'À faire';
   const statusKey = status === 'draft' ? 'first_draft' : (status || 'todo');
   const statusClass = `book-view__status--${statusKey}`;
@@ -17,22 +17,27 @@ function BookViewHeader({ title, status, onEditTitle }) {
     <header className="book-view__header">
       <span className={`book-view__status ${statusClass}`}>{label}</span>
       <h1 className="book-view__title">{title}</h1>
-      <button
-        type="button"
-        className="book-view__edit-title"
-        onClick={onEditTitle}
-        aria-label="Modifier le titre du roman"
-      >
-        Modifier le titre
-      </button>
+      {showEditTitle && (
+        <button
+          type="button"
+          className="book-view__edit-title"
+          onClick={onEditTitle}
+          aria-label="Modifier le titre du roman"
+        >
+          Modifier le titre
+        </button>
+      )}
     </header>
   );
 }
 
 export default function BookView() {
   const { projectId, view } = useParams();
+  const [searchParams] = useSearchParams();
   const { currentProject, loading, loadProject } = useCurrentProject();
   const validView = VIEWS.includes(view) ? view : 'outline';
+  const sub = searchParams.get('sub');
+  const showEditTitle = validView === 'outline' && sub === 'general';
   const [editTitleOpen, setEditTitleOpen] = useState(false);
   const [editTitleValue, setEditTitleValue] = useState('');
 
@@ -77,6 +82,7 @@ export default function BookView() {
         title={currentProject.title}
         status={status}
         onEditTitle={openEditTitle}
+        showEditTitle={showEditTitle}
       />
       <div className="book-view__body">
         {validView === 'outline' ? (

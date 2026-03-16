@@ -6,14 +6,16 @@ import Modal from '../Modal/Modal';
 import OutlinePersonnages from './OutlinePersonnages';
 import OutlineLieux from './OutlineLieux';
 import OutlineEvenements from './OutlineEvenements';
+import OutlineGeneral from './OutlineGeneral';
 import OutlineCategory from './OutlineCategory';
 import './Outline.css';
 
+const SUBMODULE_GENERAL = 'general';
 const SUBMODULE_FICHES = 'fiches';
 const SUBMODULE_PERSONNAGES = 'personnages';
 const SUBMODULE_LIEUX = 'lieux';
 const SUBMODULE_EVENEMENTS = 'evenements';
-const FIXED_SUBS = [SUBMODULE_FICHES, SUBMODULE_PERSONNAGES, SUBMODULE_LIEUX, SUBMODULE_EVENEMENTS];
+const FIXED_SUBS = [SUBMODULE_GENERAL, SUBMODULE_FICHES, SUBMODULE_PERSONNAGES, SUBMODULE_LIEUX, SUBMODULE_EVENEMENTS];
 
 /** Catégories réservées (sous-modules Personnages, Lieux, Événements) : non supprimables. */
 const PROTECTED_CATEGORY_NAMES = ['personnages', 'lieux', 'evenements', 'événements'];
@@ -28,7 +30,8 @@ export default function Outline({ projectId }) {
   const [searchParams] = useSearchParams();
   const subParam = searchParams.get('sub');
   const subFromUrl =
-    subParam === SUBMODULE_PERSONNAGES ? SUBMODULE_PERSONNAGES
+    subParam === SUBMODULE_GENERAL ? SUBMODULE_GENERAL
+    : subParam === SUBMODULE_PERSONNAGES ? SUBMODULE_PERSONNAGES
     : subParam === SUBMODULE_LIEUX ? SUBMODULE_LIEUX
     : subParam === SUBMODULE_EVENEMENTS ? SUBMODULE_EVENEMENTS
     : SUBMODULE_FICHES;
@@ -235,7 +238,9 @@ export default function Outline({ projectId }) {
 
   return (
     <section className="outline">
-      {subModule === SUBMODULE_PERSONNAGES ? (
+      {subModule === SUBMODULE_GENERAL ? (
+        <OutlineGeneral projectId={projectId} />
+      ) : subModule === SUBMODULE_PERSONNAGES ? (
         <OutlinePersonnages projectId={projectId} />
       ) : subModule === SUBMODULE_LIEUX ? (
         <OutlineLieux projectId={projectId} />

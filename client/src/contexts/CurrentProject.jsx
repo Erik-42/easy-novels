@@ -32,11 +32,17 @@ export function CurrentProjectProvider({ children }) {
     setCurrentProject(null);
   }, []);
 
+  /** Met à jour le projet en contexte sans refetch (évite le flash "Chargement…"). */
+  const updateCurrentProject = useCallback((patch) => {
+    setCurrentProject((prev) => (prev && patch ? { ...prev, ...patch } : prev));
+  }, []);
+
   const value = {
     currentProject,
     loading,
     loadProject,
     clearProject,
+    updateCurrentProject,
   };
 
   return (

@@ -25,6 +25,7 @@ export default function Sidebar() {
 
   const outlineSubItems = useMemo(() => {
     const fixed = [
+      { sub: 'general', label: 'Général' },
       { sub: 'fiches', label: 'Fiches' },
       { sub: 'personnages', label: 'Personnages' },
       { sub: 'lieux', label: 'Lieux' },
@@ -33,7 +34,7 @@ export default function Sidebar() {
     const others = categories
       .filter((c) => {
         const name = (c.name ?? '').trim().toLowerCase();
-        return name !== 'fiches' && name !== 'personnages' && name !== 'lieux' && name !== 'événements' && name !== 'evenements';
+        return name !== 'general' && name !== 'général' && name !== 'fiches' && name !== 'personnages' && name !== 'lieux' && name !== 'événements' && name !== 'evenements';
       })
       .map((c) => ({ sub: c._id, label: c.name || 'Sans nom' }));
     return [...fixed, ...others];
@@ -73,15 +74,17 @@ export default function Sidebar() {
               </Link>
               {subItems && isBookViewActive(view) && (
                 <div className="sidebar__sub">
-                  {subItems.map(({ sub, label: subLabel }) => (
-                    <Link
-                      key={sub}
-                      to={`/book/${projectId}/${view}?sub=${sub}`}
-                      className={`sidebar__item sidebar__item--sub ${isOutlineWithSub(sub) ? 'active' : ''}`}
-                    >
-                      {subLabel}
-                    </Link>
-                  ))}
+                  {subItems
+                    .filter(({ sub }) => sub !== 'fiches')
+                    .map(({ sub, label: subLabel }) => (
+                      <Link
+                        key={sub}
+                        to={`/book/${projectId}/${view}?sub=${sub}`}
+                        className={`sidebar__item sidebar__item--sub ${isOutlineWithSub(sub) ? 'active' : ''}`}
+                      >
+                        {subLabel}
+                      </Link>
+                    ))}
                 </div>
               )}
             </div>

@@ -228,6 +228,22 @@ export function useOutline(projectId) {
     [fetchOutline]
   );
 
+  const updateProject = useCallback(
+    async (patch) => {
+      if (!projectId || !patch) return;
+      const db = await getDb();
+      const doc = await db.get(projectId);
+      const updated = {
+        ...doc,
+        ...patch,
+        updatedAt: new Date().toISOString(),
+      };
+      await db.put(updated);
+      setProject((prev) => (prev ? { ...prev, ...patch } : null));
+    },
+    [projectId]
+  );
+
   return {
     project,
     categories,
@@ -243,5 +259,6 @@ export function useOutline(projectId) {
     addItem,
     updateItem,
     deleteItem,
+    updateProject,
   };
 }
